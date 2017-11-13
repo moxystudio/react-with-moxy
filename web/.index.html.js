@@ -1,5 +1,18 @@
 import difference from 'lodash/difference';
 
+// In the client, we load polyfills from http://polyfill.io instead of using babel-polyfill
+// By doing so, we SELECTIVELY deliver only the polyfills the browser actually NEEDS
+// See: http://node.green/ for the availability of these stuff on nodejs
+const polyfillIoFeatures = [
+    'default-3.6',  // Includes Array.from required by babel, see http://babeljs.io/docs/usage/caveats (contains also many methods available in nodejs >= v6)
+    'Symbol',  // Required by babel, see http://babeljs.io/docs/usage/caveats
+    'Array.prototype.find',  // Part of ES6/ES2015 and likely to be used (available in available in nodejs >= v4)
+    'Array.prototype.findIndex',  // Part of ES6/ES2015 and likely to be used  (available in available in nodejs >= v4)
+    'String.prototype.repeat',  // Part of ES5/ES2015 and likely to be used (available in nodejs >= v4)
+    'setImmediate',  // Likely to be used, available in nodejs for long time
+    'requestAnimationFrame',  // Likely to be used in the frontend
+].join(',');
+
 export default function index({ head, rootHtml, config, buildManifest }) {
     const { assets, routes: { sync: syncRoutes, async: asyncRoutes } } = buildManifest;
     const { routesToPrefetch } = config;
@@ -38,6 +51,9 @@ export default function index({ head, rootHtml, config, buildManifest }) {
             <body>
                 <!-- Root element where app goes -->
                 <div id="root">${rootHtml}</div>
+
+                <!-- Load polyfills -->
+                <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=${polyfillIoFeatures}"></script>
 
                 <!-- Load main file -->
                 <script src="${assets['main.js']}"></script>

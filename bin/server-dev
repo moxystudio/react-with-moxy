@@ -2,8 +2,6 @@
 
 'use strict';
 
-require('babel-polyfill');
-
 const yargs = require('yargs');
 const planify = require('planify');
 const webpack = require('webpack');

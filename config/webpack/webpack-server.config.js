@@ -33,7 +33,7 @@ module.exports = (options) => {
         context: projectDir,
         entry: {
             'server-renderer': [
-                // 'babel-polyfill',  // Do not uncomment, included only once in server and server-dev
+                'babel-regenerator-runtime',  // Necessary for babel async/await to work (the rest of the polyfills are served by polyfill.io)
                 './src/server-renderer.js',
             ],
         },

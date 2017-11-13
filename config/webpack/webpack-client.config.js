@@ -33,8 +33,7 @@ module.exports = (options) => {
         context: projectDir,
         entry: {
             main: [
-                'babel-polyfill',  // Necessary for babel to run (replaces babel-polyfill)
-                'dom4',  // Adds dom4 polyfills, such as Element.remove(), etc
+                'babel-regenerator-runtime',  // Necessary for babel async/await to work (the rest of the polyfills are served by polyfill.io)
                 !options.build && 'eventsource-polyfill',  // Necessary to make hmr work on IE
                 !options.build && 'react-hot-loader/patch',  // For hot module reload
                 !options.build && 'webpack-hot-middleware/client?reload=true',  // For hot module reload
