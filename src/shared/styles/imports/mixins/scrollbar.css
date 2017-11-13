@@ -1,0 +1,17 @@
+/* ==========================================================================
+   Mixin to style scrollbars
+   ========================================================================== */
+
+@define-mixin scrollbar $selector, $size: 7px, $color: rgba(0, 0, 0, 0.5), $radius: 4px {
+    $selector::-webkit-scrollbar {
+        width: $size;
+        height: $size;
+        appearance: none;
+    }
+
+    $selector::-webkit-scrollbar-thumb {
+        background-color: $color;
+        border-radius: $radius;
+        box-shadow: 0 0 1px $color;
+    }
+}

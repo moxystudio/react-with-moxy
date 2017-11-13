@@ -1,0 +1,11 @@
+/* ==========================================================================
+   Utility mixin to clear children floats
+   ========================================================================== */
+
+@define-mixin clearfix $selector {
+    $selector::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}

@@ -1,0 +1,38 @@
+/* ==========================================================================
+  Smooth & sharp mixins
+  ========================================================================== */
+
+@define-mixin typography-smooth {
+    -moz-osx-font-smoothing: grayscale;  /* Font smoothing tweaks for MacOSx in Gecko */
+    -webkit-font-smoothing: antialiased; /* Font smoothing tweaks for MacOSx in Webkit */
+}
+
+@define-mixin typography-sharp {
+    -moz-osx-font-smoothing: initial;   /* Turn off font smoothing tweaks for MacOSx in Gecko */
+    -webkit-font-smoothing: initial;    /* Turn off font smoothing tweaks for MacOSx in Webkit */
+}
+
+/* ==========================================================================
+  Ellipsis mixin
+  ========================================================================== */
+
+/* The container needs to have a width for it to work */
+
+@define-mixin typography-ellipsis {
+    overflow: hidden;       /* "overflow" value must be different from "visible" */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-wrap: normal;
+}
+
+@define-mixin typography-ellipsis-multiline $line-count, $max-height {
+    /* $line-count lines of text */
+    /* stylelint-disable */
+    display: -webkit-box;
+    max-height: $max-height;
+    overflow: hidden;
+    -webkit-line-clamp: $line-count;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    /* stylelint-enable */
+}

@@ -1,0 +1,12 @@
+@import "variables";
+
+@define-mixin layout-main $selector, $container-selector {
+    $selector {
+        flex: 1 0 auto;
+        background-color: var(--color-alabaster);
+    }
+
+    $container-selector {
+        padding: var(--layout-edge-spacing);
+    }
+}

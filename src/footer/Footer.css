@@ -1,0 +1,25 @@
+@import "variables";
+@import "mixins/typography";
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+.footer {
+    height: 35px;
+    padding: 0 var(--layout-edge-spacing-x);
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    background-color: var(--color-gallery);
+}
+
+.made-with-moxy-link {
+    @mixin typography-smooth;
+    color: color(var(--color-gallery) blackness(80%));
+    font-size: 13px;
+}
+
+.made-with-moxy-link:hover {
+    color: color(var(--color-violet) whiteness(40%));
+}

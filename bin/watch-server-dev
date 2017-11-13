@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const nodemon = require('nodemon');
+const path = require('path');
+const watchArr = [];
+
+// Dev server and its dependencies
+watchArr.push(path.resolve(`${__dirname}/../config`));
+watchArr.push(path.resolve(`${__dirname}/server-dev`));
+watchArr.push(path.resolve(`${__dirname}/util`));
+
+nodemon({
+    script: `${__dirname}/server-dev`,
+    args: process.argv.slice(2),
+    watch: watchArr,
+});
+
+nodemon
+.on('restart', (files) => {
+    process.stdout.write('Changes in the following files were detected:\n');
+    files.forEach((file) => process.stdout.write(`- ${file}\n`));
+    process.stdout.write('Re-starting dev server...\n');
+    process.stdout.write('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n');
+})
+.on('quit', () => {
+    process.exit();
+});

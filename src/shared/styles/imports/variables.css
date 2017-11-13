@@ -1,0 +1,50 @@
+@import "custom-medias";
+
+/* ==========================================================================
+   Colors
+   ========================================================================== */
+
+/*
+   See: https://davidwalsh.name/sass-color-variables-dont-suck
+        http://chir.ag/projects/name-that-color
+*/
+
+:root {
+    --color-white: #fff;
+    --color-alabaster: #f7f7f7;
+    --color-amaranth: #ed3251;
+    --color-violet: #280d45;
+    --color-gallery: #ececec;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+:root {
+    --typography-display-font: "Roboto", sans-serif;
+    --typography-text-font: "Roboto", sans-serif;
+}
+
+/* ==========================================================================
+   Layout vars
+   ========================================================================== */
+
+:root {
+    /* Header
+       ============================================= */
+    --layout-header-height: 50px;
+
+    /* Spacing around main contents of the website
+       ============================================= */
+    --layout-edge-spacing: 30px;
+    --layout-edge-spacing-x: 30px;
+    --layout-edge-spacing-y: 30px;
+}
+
+@media (--layout-lte-small) {
+    :root {
+        --layout-edge-spacing: 30px 10px;
+        --layout-edge-spacing-x: 10px;
+    }
+}

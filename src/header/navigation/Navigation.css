@@ -1,0 +1,26 @@
+@import "variables";
+
+.list {
+    margin: 0;
+    list-style: none;
+}
+
+.list-item {
+    display: inline-block;
+}
+
+.list-item:not(:last-child) {
+    margin-right: 10px;
+}
+
+.link {
+    color: #fff;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.link:hover,
+.link.is-active {
+    color: var(--color-alabaster);
+    text-decoration: underline;
+}

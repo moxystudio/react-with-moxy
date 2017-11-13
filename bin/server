@@ -1,0 +1,132 @@
+#!/usr/bin/env node
+
+'use strict';
+
+require('babel-polyfill');
+
+const yargs = require('yargs');
+const planify = require('planify');
+const internalIp = require('internal-ip');
+const express = require('express');
+const compression = require('compression');
+const validator = require('./util/validator');
+
+const projectDir = `${__dirname}/..`;
+
+// ---------------------------------------------------------
+// CLI definition
+// ---------------------------------------------------------
+
+const argv = yargs
+.strict()
+.wrap(Math.min(120, yargs.terminalWidth()))
+.help('help')
+.alias('help', 'h')
+.usage('Usage: ./$0 [options]')
+.demand(0, 0)
+.env('SERVER')
+.option('hostname', {
+    alias: 'H',
+    type: 'string',
+    default: process.env.HOSTNAME || '0.0.0.0',
+    describe: 'The hostname to bind to',
+})
+.option('port', {
+    alias: 'p',
+    type: 'number',
+    default: Number(process.env.PORT) || 3000,
+    describe: 'The port to bind to',
+})
+.option('gzip', {
+    alias: 'gz',
+    type: 'boolean',
+    default: true,
+    describe: 'Enable or disable gzip compression',
+})
+.option('reporter', {
+    alias: ['r', 'R'],
+    type: 'string',
+    describe: 'Any of the planify\'s reporters',
+})
+.example('$0', 'Serves the last built application')
+.example('$0 --port 8081', 'Serves the last built application on port 8081')
+.argv;
+
+// ---------------------------------------------------------
+// Functions
+// ---------------------------------------------------------
+
+function runServer() {
+    const app = express();
+
+    // Configure express app
+    app.set('env', 'production');  // Enable production mode
+    app.set('etag', false);  // Not necessary by default
+    app.set('x-powered-by', false);  // Remove x-powered-by header
+
+    // Enable gzip compression
+    argv.gzip && app.use('/', compression());
+
+    // Public files in /build have the following pattern: <file>.<hash>.<extension>
+    // Therefore it's safe to cache them indefinitely
+    app.use('/build', express.static(`${projectDir}/web/build`, {
+        maxAge: 31557600000,  // 1 year
+        etag: false,  // Not necessary
+        index: false,  // Disable directory listing
+        fallthrough: false,  // Ensure that requests to /build do not propagate to other middleware
+    }));
+
+    // The rest of the public files are served using a more modest approach using etags
+    app.use('/', express.static(`${projectDir}/web`, {
+        index: false,
+    }));
+
+    // If it's not a public file, then try to render it using the server-renderer
+    const serverRender = require(`${projectDir}/web/build/server-renderer`).default;  // eslint-disable-line global-require
+    const serverRenderError = require(`${projectDir}/web/build/server-renderer`).renderError;  // eslint-disable-line global-require
+    const buildManifest = require(`${projectDir}/web/build/.manifest.json`);  // eslint-disable-line global-require
+    const env = buildManifest.env || 'N/A';
+
+    app.get('*',
+        (req, res, next) => {
+            serverRender({ req, res, buildManifest })
+            .catch((err) => setImmediate(() => next(err)));
+        },
+        // Error middleware to call "renderError()" from the server-renderer
+        (err, req, res, next) => {
+            if (!err) {
+                return next();
+            }
+
+            serverRenderError({ err, req, res, buildManifest })
+            .catch((err) => setImmediate(() => next(err)));
+        }
+    );
+
+    // Start server
+    return new Promise((resolve, reject) => {
+        const isLocalOnly = argv.hostname === 'localhost' || argv.hostname === '127.0.0.1';
+
+        process.stdout.write(`Environment:               ${env}\n`);
+        process.stdout.write(`Server address:            http://${argv.hostname}:${argv.port}\n`);
+        !isLocalOnly && process.stdout.write(`LAN server address:        http://${internalIp.v4()}:${argv.port}\n`);
+        process.stdout.write(`Gzip compression:          ${argv.gzip ? 'on' : 'off'}\n`);
+
+        app.listen(argv.port, argv.hostname, (err) => {
+            if (err) {
+                return reject(err);
+            }
+
+            process.stdout.write('\nServer is now up and running, press CTRL-C to stop.\n');
+        });
+    });
+}
+
+// ---------------------------------------------------------
+// Steps
+// ---------------------------------------------------------
+
+planify({ exit: true, reporter: argv.reporter })
+.step('Validating build', () => validator.validateBuild())
+.step('Running server', () => runServer())
+.run();

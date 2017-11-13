@@ -1,0 +1,26 @@
+@import "variables";
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+.header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: var(--layout-header-height);
+    z-index: 5;
+    padding: 10px var(--layout-edge-spacing-x);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ==========================================================================
+   Logo
+   ========================================================================== */
+
+.logo {
+    width: 35px;
+}

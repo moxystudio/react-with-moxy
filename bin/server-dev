@@ -1,0 +1,282 @@
+#!/usr/bin/env node
+
+'use strict';
+
+require('babel-polyfill');
+
+const yargs = require('yargs');
+const planify = require('planify');
+const webpack = require('webpack');
+const rimraf = require('rimraf');
+const getPort = require('gport');
+const internalIp = require('internal-ip');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
+const express = require('express');
+const webpackClientConfig = require('../config/webpack/webpack-client.config.js');
+const webpackServerConfig = require('../config/webpack/webpack-server.config.js');
+const validator = require('./util/validator');
+const manifest = require('./util/manifest');
+const opn = require('opn');
+
+const projectDir = `${__dirname}/..`;
+
+// ---------------------------------------------------------
+// CLI definition
+// ---------------------------------------------------------
+
+const argv = yargs
+.strict()
+.wrap(Math.min(120, yargs.terminalWidth()))
+.help('help')
+.alias('help', 'h')
+.usage('Usage: ./$0 [options]')
+.demand(0, 0)
+.env('SERVER')
+.option('hostname', {
+    alias: 'H',
+    type: 'string',
+    default: process.env.HOSTNAME || '0.0.0.0',
+    describe: 'The hostname to bind to',
+})
+.option('port', {
+    alias: 'p',
+    type: 'number',
+    default: Number(process.env.PORT) || 3000,
+    describe: 'The port to bind to (will automatically find another if already in use)',
+})
+.option('polling', {
+    alias: ['poll'],
+    type: 'boolean',
+    describe: 'Use polling whe watching for file changes, disable it if you are having issues with polling (defaults to automatic)',
+})
+.option('reporter', {
+    alias: ['r', 'R'],
+    type: 'string',
+    describe: 'Any of the planify\'s reporters',
+})
+.example('$0', 'Serves the application for local development')
+.example('$0 --port 8081', 'Serves the application for local development on port 8081')
+.argv;
+
+const env = 'dev';  // This server is only for the dev environment
+
+// ---------------------------------------------------------
+// Functions
+// ---------------------------------------------------------
+
+function handleWebpackStatsOnBuild(compiler, compilerType, result) {
+    let firstBuild = true;
+
+    compiler.plugin('done', (stats) => {
+        // Store stats
+        result.stats = stats;
+
+        // Open browser on first build
+        if (firstBuild && compilerType === 'server') {
+            opn(`http://${argv.hostname}:${argv.port}`);
+        }
+
+        firstBuild = false;
+
+        // Print stats
+        const statsJson = stats.toJson();
+        const statsStr = stats.toString({
+            assets: firstBuild,
+            chunks: false,
+            version: false,
+            children: false,
+            modules: false,
+            colors: true,
+        }).trim();
+
+        if (statsJson.errors.length) {
+            process.stdout.write(`> Webpack ${compilerType}-side build failed..\n`);
+            process.stdout.write('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+            process.stdout.write(`${statsStr}\n\n`);
+        } else {
+            process.stdout.write(`Webpack ${compilerType}-side successful\n`);
+            process.stdout.write('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+            process.stdout.write(`${statsStr}\n\n`);
+        }
+    });
+}
+
+function setupClientWebpack(app) {
+    const config = webpackClientConfig({ env });
+    const compiler = webpack(config);
+    const result = {
+        compiler,
+        stats: null,
+    };
+
+    // Handle each build by storing stats & printing useful info
+    handleWebpackStatsOnBuild(compiler, 'client', result);
+
+    // Attach dev + hot middlewares to our express app
+    const webpackDevMiddlewareInstance = webpackDevMiddleware(compiler, {
+        publicPath: config.output.publicPath,
+        watchOptions: { poll: argv.polling },
+        noInfo: true,
+        quiet: true,
+        lazy: false,
+    });
+
+    app.use(webpackDevMiddlewareInstance);
+    app.use(webpackHotMiddleware(compiler, { log: null }));
+
+    return result;
+}
+
+function setupServerWebpack() {
+    const config = webpackServerConfig({ env });
+    const compiler = webpack(config);
+    const serverRendererFile = `${config.output.path}server-renderer.js`;
+    const result = {
+        compiler,
+    };
+
+    // Handle each build by storing stats & printing useful info
+    handleWebpackStatsOnBuild(compiler, 'server', result);
+
+    // Complete on each change, storing the render function
+    compiler.watch({ poll: argv.polling }, (err) => {
+        // Fatal errors
+        if (err) {
+            process.stdout.write('Webpack server-side build failed..\n');
+            process.stdout.write('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+            console.log(err);
+
+            return;
+        }
+
+        // Get the new server-renderer functions
+        delete require.cache[serverRendererFile];
+
+        try {
+            result.render = require(serverRendererFile).default;  // eslint-disable-line global-require
+            result.renderError = require(serverRendererFile).renderError;  // eslint-disable-line global-require
+            result.requireError = null;
+        } catch (err) {
+            result.render = result.renderError = null;
+            result.requireError = err;
+        }
+    });
+
+    return result;
+}
+
+function prepareWeb() {
+    process.stdout.write('Cleaning previous build..\n');
+    rimraf.sync(`${projectDir}/web/build`);
+}
+
+function findFreePort() {
+    return new Promise((resolve) => {
+        getPort(argv.port, (port) => {
+            if (port !== argv.port) {
+                process.stdout.write(`Port ${argv.port} is already in use, using ${port} instead..\n`);
+            }
+
+            argv.port = port;
+            resolve();
+        });
+    });
+}
+
+function runServer() {
+    const app = express();
+
+    // Configure express app
+    app.set('etag', false);  // Not necessary by default
+
+    // When doing local development, we want both the client and server to be re-compiled
+    const clientWebpack = setupClientWebpack(app);
+    const serverWebpack = setupServerWebpack();
+
+    // Public files are served without any cache
+    app.use('/', express.static(`${projectDir}/web`, {
+        maxAge: 0,
+        etag: false,
+    }));
+
+    // If it's not a public file, then try to render it using the server-renderer
+    app.get('*',
+        (req, res, next) => {
+            const { stats: clientStats } = clientWebpack;
+            const { render: serverRender, stats: serverStats, requireError } = serverWebpack;
+
+            // Check if the last require failed
+            if (requireError) {
+                return next(requireError);
+            }
+
+            // Still building?
+            if (!serverStats || !serverRender) {
+                return res.send('Server-side bundle is still being compiled, please refresh the page in a few seconds..');
+            }
+            if (!clientStats) {
+                return res.send('Client-side bundles are still being compiled, please refresh the page in a few seconds..');
+            }
+
+            const buildManifest = manifest.merge(
+                manifest.fromWebpackStats(serverStats),
+                manifest.fromWebpackStats(clientStats)
+            );
+
+            serverRender({ req, res, buildManifest })
+            .catch((err) => setImmediate(() => next(err)));
+        },
+        // Error middleware to call "renderError()" from the server-renderer
+        (err, req, res, next) => {
+            if (!err) {
+                return next();
+            }
+
+            const { stats: clientStats } = clientWebpack;
+            const { renderError: serverRenderError, stats: serverStats } = serverWebpack;
+
+            if (!serverStats || !serverRenderError || !clientStats) {
+                return next(err);
+            }
+
+            const buildManifest = manifest.merge(
+                manifest.fromWebpackStats(serverStats),
+                manifest.fromWebpackStats(clientStats)
+            );
+
+            serverRenderError({ err, req, res, buildManifest })
+            .catch((err) => setImmediate(() => next(err)));
+        }
+    );
+
+    // Start server
+    return new Promise((resolve, reject) => {
+        const isLocalOnly = argv.hostname === 'localhost' || argv.hostname === '127.0.0.1';
+
+        process.stdout.write(`Environment:               ${env}\n`);
+        process.stdout.write(`Server address:            http://${argv.hostname}:${argv.port}\n`);
+        !isLocalOnly && process.stdout.write(`LAN server address:        http://${internalIp.v4()}:${argv.port}\n`);
+        process.stdout.write('Hot module replacement:    on\n');
+
+        app.listen(argv.port, argv.hostname, (err) => {
+            if (err) {
+                return reject(err);
+            }
+
+            process.stdout.write('\nServer is now up and running, press CTRL-C to stop.');
+            process.stdout.write('\nBuilding for the first time, please wait...\n\n');
+        });
+    });
+}
+
+// ---------------------------------------------------------
+// Steps
+// ---------------------------------------------------------
+
+planify({ exit: true, reporter: argv.reporter })
+.step(`Validating ${env} environment`, () => validator.validateEnvironment(env))
+.step('Preparing web directory', () => prepareWeb())
+.step('Finding free port', () => findFreePort())
+.step('Running server', () => runServer())
+.run();

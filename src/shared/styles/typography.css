@@ -1,0 +1,82 @@
+@import "variables";
+@import "mixins/typography";
+
+/* ==========================================================================
+   Typography Defaults
+   ========================================================================== */
+
+html,
+body {
+    /* Put background color also in html because of macOS/iOS elastic scroll */
+    background-color: var(--color-alabaster);
+}
+
+body {
+    color: var(--color-violet);
+    font-family: var(--typography-text-font);
+    font-size: 16px;
+    overflow-wrap: break-word;  /* Break long words by default */
+}
+
+::selection {
+    background: color(var(--color-violet) lightness(25%));
+    color: var(--color-white);
+}
+
+strong {
+    font-weight: 500;
+}
+
+/* ==========================================================================
+  Links
+  ========================================================================== */
+
+a {
+    color: var(--color-amaranth);
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--color-amaranth);
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+  Headings
+  ========================================================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--typography-display-font);
+    font-weight: 400;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+h1 {
+    font-size: 42px;
+}
+
+h2 {
+    font-size: 36px;
+}
+
+h3 {
+    font-size: 32px;
+}
+
+h4 {
+    font-size: 28px;
+}
+
+h5 {
+    font-size: 24px;
+}
+
+h6 {
+    font-size: 20px;
+}

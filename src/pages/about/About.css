@@ -1,0 +1,45 @@
+@import "mixins/layout";
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+@mixin layout-main .about-page, .container;
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+
+.hero {
+    position: relative;
+    height: 300px;
+    min-height: 150px;
+    max-height: 20vh;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    width: calc(100% + 300px);
+    height: 100%;
+    display: block;
+    background: url("shared/media/images/backgrounds/moxy-crowd.jpg") -300px center no-repeat;
+    background-size: cover;
+}
+
+/* ==========================================================================
+   Icons
+   ========================================================================== */
+
+.icon {
+    margin-right: 10px;
+}
+
+.icon:hover {
+    fill: var(--color-amaranth);
+}
+
+.icon-name {
+    vertical-align: middle;
+}
