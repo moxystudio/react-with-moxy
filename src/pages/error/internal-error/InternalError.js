@@ -30,11 +30,11 @@ class InternalError extends PureComponent {
             </main>
         );
     }
-}
 
-InternalError.propTypes = {
-    err: PropTypes.object,
-    serverContext: PropTypes.object,
-};
+    static propTypes = {
+        err: PropTypes.object,
+        serverContext: PropTypes.object,
+    }
+}
 
 export default InternalError;

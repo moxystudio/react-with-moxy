@@ -26,11 +26,11 @@ class App extends PureComponent {
             </div>
         );
     }
-}
 
-App.propTypes = {
-    children: PropTypes.element,
-};
+    static propTypes = {
+        children: PropTypes.element,
+    }
+}
 
 export function buildRoutes() {
     return {

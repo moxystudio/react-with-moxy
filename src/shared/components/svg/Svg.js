@@ -18,12 +18,12 @@ class Svg extends PureComponent {
             </i>
         );
     }
-}
 
-Svg.propTypes = {
-    svg: PropTypes.object.isRequired,
-    title: PropTypes.string,
-    className: PropTypes.string,
-};
+    static propTypes = {
+        svg: PropTypes.object.isRequired,
+        title: PropTypes.string,
+        className: PropTypes.string,
+    }
+}
 
 module.exports = Svg;

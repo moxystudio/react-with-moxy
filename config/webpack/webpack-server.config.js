@@ -72,6 +72,7 @@ module.exports = (options) => {
                                     'react',
                                 ].filter((val) => val),
                                 plugins: [
+                                    'transform-class-properties',
                                     // Necessary for import() to work
                                     'dynamic-import-node',
                                     // Transforms that optimize build

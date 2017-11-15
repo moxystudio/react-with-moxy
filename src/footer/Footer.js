@@ -18,10 +18,10 @@ class Footer extends PureComponent {
             </footer>
         );
     }
-}
 
-Footer.propTypes = {
-    className: PropTypes.string,
-};
+    static propTypes = {
+        className: PropTypes.string,
+    }
+}
 
 export default Footer;

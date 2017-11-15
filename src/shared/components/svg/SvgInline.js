@@ -12,11 +12,11 @@ class SvgInline extends PureComponent {
             <SvgInlineReact className={ classnames(styles.svg, className) } src={ svg } { ...props } />
         );
     }
-}
 
-SvgInline.propTypes = {
-    svg: PropTypes.string.isRequired,
-    className: PropTypes.string,
-};
+    static propTypes = {
+        svg: PropTypes.string.isRequired,
+        className: PropTypes.string,
+    }
+}
 
 export default SvgInline;

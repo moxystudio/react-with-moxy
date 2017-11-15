@@ -77,6 +77,7 @@ module.exports = (options) => {
                                     'react',
                                 ].filter((val) => val),
                                 plugins: [
+                                    'transform-class-properties',
                                     // Necessary for import() to work
                                     'syntax-dynamic-import',
                                     // <3 hot module reload
