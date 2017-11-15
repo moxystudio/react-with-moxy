@@ -39,7 +39,7 @@ export default async function render({ req, res, buildManifest }) {
 
     // Render document
     const html = renderDocument({
-        head: Helmet.rewind(),
+        helmet: Helmet.renderStatic(),
         rootHtml,
         config,
         buildManifest,
@@ -74,7 +74,7 @@ export async function renderError({ err, req, res, buildManifest }) {
 
     // Render document
     const html = renderDocument({
-        head: Helmet.rewind(),
+        helmet: Helmet.renderStatic(),
         rootHtml,
         config,
         buildManifest,

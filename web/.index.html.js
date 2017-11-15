@@ -1,6 +1,6 @@
 import difference from 'lodash/difference';
 
-export default function index({ head, rootHtml, config, buildManifest }) {
+export default function index({ helmet, rootHtml, config, buildManifest }) {
     const { assets, routes: { sync: syncRoutes, async: asyncRoutes } } = buildManifest;
     const { routesToPrefetch } = config;
 
@@ -16,15 +16,15 @@ export default function index({ head, rootHtml, config, buildManifest }) {
 
     return `
         <!DOCTYPE html>
-        <html ${head.htmlAttributes.toString()}>
+        <html ${helmet.htmlAttributes.toString()}>
             <head>
                 <meta charset="utf-8">
                 <meta http-equiv="x-ua-compatible" content="ie=edge">
                 <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1" />
 
-                ${head.title.toString()}
-                ${head.meta.toString()}
-                ${head.link.toString()}
+                ${helmet.title.toString()}
+                ${helmet.meta.toString()}
+                ${helmet.link.toString()}
 
                 <!-- Roboto from Google-->
                 <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
