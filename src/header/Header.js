@@ -21,10 +21,10 @@ class Header extends PureComponent {
             </header>
         );
     }
-}
 
-Header.propTypes = {
-    className: PropTypes.string,
-};
+    static propTypes = {
+        className: PropTypes.string,
+    }
+}
 
 export default Header;

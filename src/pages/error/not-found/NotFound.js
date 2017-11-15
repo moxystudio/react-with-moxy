@@ -22,10 +22,10 @@ class NotFound extends PureComponent {
             </main>
         );
     }
-}
 
-NotFound.propTypes = {
-    serverContext: PropTypes.object,
-};
+    static propTypes = {
+        serverContext: PropTypes.object,
+    }
+}
 
 export default NotFound;
