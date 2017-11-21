@@ -4,7 +4,11 @@ import Helmet from 'react-helmet';
 import Header from './header/Header';
 import Footer from './footer/Footer';
 import styles from './App.css';
-import { default as buildPageRoutes } from './pages/buildRoutes';
+import buildPageRoutes from './pages/buildRoutes';
+
+// Force Helmet's defer prop to false until it works out a bug on IE11
+// See: https://github.com/nfl/react-helmet/issues/336
+Helmet.defaultProps.defer = false;
 
 class App extends PureComponent {
     render() {
@@ -34,9 +38,8 @@ class App extends PureComponent {
 
 export function buildRoutes() {
     return {
-        path: '/',
         component: App,
-        childRoutes: buildPageRoutes(),
+        ...buildPageRoutes(),
     };
 }
 

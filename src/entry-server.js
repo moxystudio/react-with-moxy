@@ -1,20 +1,18 @@
-/* eslint-disable react/jsx-no-bind */
-
+import 'babel-polyfill';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { match, RouterContext, createMemoryHistory } from 'react-router';
 import Helmet from 'react-helmet';
-import config from 'config';
 import pify from 'pify';
 import { buildRoutes } from './App';
-import renderDocument from '../web/.index.html';
+import renderDocument from './index.html';
 
 const matchAsync = pify(match, { multiArgs: true });
 
 // Build our routes
 const routes = buildRoutes();
 
-export default async function render({ req, res, buildManifest }) {
+export async function render({ req, res, buildManifest }) {
     // Match req against our routes
     const history = createMemoryHistory();
     const [redirectLocation, renderProps] = await matchAsync({ history, routes, location: req.url });
@@ -28,20 +26,18 @@ export default async function render({ req, res, buildManifest }) {
         return res.status(404).end();
     }
 
-    const serverContext = { req, res };
-
     // Render HTML that goes to into <div id="root"></div>
+    const createElement = (Component, props) => <Component { ...props } serverContext={ { req, res } } />;
     const rootHtml = renderToString(
         <RouterContext
             { ...renderProps }
-            createElement={ (Component, props) => <Component { ...props } serverContext={ serverContext } /> } />
+            createElement={ createElement } />
     );
 
     // Render document
     const html = renderDocument({
         helmet: Helmet.renderStatic(),
         rootHtml,
-        config,
         buildManifest,
     });
 
@@ -63,25 +59,21 @@ export async function renderError({ err, req, res, buildManifest }) {
         throw err;
     }
 
-    const serverContext = { req, res, err };
-
     // Render page that goes to into <div id="root"></div>
+    const createElement = (Component, props) => <Component { ...props } serverContext={ { err, req, res } } />;
     const rootHtml = renderToString(
         <RouterContext
             { ...renderProps }
-            createElement={ (Component, props) => <Component { ...props } serverContext={ serverContext } /> } />
+            createElement={ createElement } />
     );
 
     // Render document
     const html = renderDocument({
         helmet: Helmet.renderStatic(),
         rootHtml,
-        config,
         buildManifest,
     });
 
     // Send HTML
     res.send(html);
 }
-
-export { config };

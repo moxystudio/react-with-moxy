@@ -1,13 +1,11 @@
-import config from 'config';
+import 'babel-polyfill';
 import React from 'react';
-import { render } from 'react-dom';
+import { hydrate } from 'react-dom';
 import { match, Router, browserHistory as history, applyRouterMiddleware } from 'react-router';
 import { useScroll } from 'react-router-scroll';
 import nprogress from 'nprogress';
 import { AppContainer } from 'react-hot-loader';
 import { buildRoutes } from './App';
-
-console.info('[client-renderer] App config is', config);
 
 // Track page views for this SPA in Google Analytics
 history.listen((location) => {
@@ -26,7 +24,7 @@ let routes = buildRoutes();
 // Render our app!
 // Need to use match() because of async routes, see https://github.com/ReactTraining/react-router/blob/master/docs/guides/ServerRendering.md#async-routes
 match({ history, routes }, (error, redirectLocation, renderProps) => {
-    render(
+    hydrate(
         <AppContainer>
             <Router
                 { ...renderProps }
@@ -37,21 +35,23 @@ match({ history, routes }, (error, redirectLocation, renderProps) => {
         document.getElementById('root'),
         () => {
             // Remove server-side rendered CSS when developing, otherwise CSS styles would be duplicated
-            if (process.env.NODE_ENV !== 'production') {
-                setTimeout(() => document.getElementById('app-css').remove(), 100);
+            if (process.env.NODE_ENV === 'development') {
+                setTimeout(() =>
+                    Array.from(document.querySelectorAll('link[rel="stylesheet"][data-ssr]'))
+                    .forEach((el) => el.remove()), 100);
             }
         }
     );
 });
 
-if (__DEV__ && module.hot) {
+if (process.env.NODE_ENV === 'development' && module.hot) {
     // Hot module reload for App and its routes
     module.hot.accept('./App', () => {
         const buildRoutes = require('./App').buildRoutes;
 
         routes = buildRoutes();
 
-        render(
+        hydrate(
             <AppContainer>
                 <Router
                     history={ history }

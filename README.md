@@ -37,7 +37,7 @@ TODO:
 
 1. Clone the project
 2. Change the `origin` remote to your project's repository
-4. `$ npm install`
+3. `$ npm install`
 
 
 ## Development

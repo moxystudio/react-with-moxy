@@ -16,7 +16,7 @@ class Home extends PureComponent {
                         eget laoreet sapien ultricies eu. Proin pellentesque, nisl id commodo placerat, mauris lectus tristique leo, a
                         suscipit magna metus id velit. Morbi feugiat ex ut mi lobortis vulputate. Sed facilisis
                         dignissim odio non convallis. Nullam ac commodo felis. Ut in scelerisque eros. Duis at urna sed sem tincidunt
-                        fringilla.Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
+                        fringilla. Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
                     </p>
 
                     <h2>Heading 2</h2>
@@ -28,7 +28,7 @@ class Home extends PureComponent {
                         eget laoreet sapien ultricies eu. Proin pellentesque, nisl id commodo placerat, mauris lectus tristique leo, a
                         suscipit magna metus id velit. Morbi feugiat ex ut mi lobortis vulputate. Sed facilisis
                         dignissim odio non convallis. Nullam ac commodo felis. Ut in scelerisque eros. Duis at urna sed sem tincidunt
-                        fringilla.Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
+                        fringilla. Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
                     </p>
 
                     <h3>Heading 3</h3>
@@ -40,7 +40,7 @@ class Home extends PureComponent {
                         eget laoreet sapien ultricies eu. Proin pellentesque, nisl id commodo placerat, mauris lectus tristique leo, a
                         suscipit magna metus id velit. Morbi feugiat ex ut mi lobortis vulputate. Sed facilisis
                         dignissim odio non convallis. Nullam ac commodo felis. Ut in scelerisque eros. Duis at urna sed sem tincidunt
-                        fringilla.Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
+                        fringilla. Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
                     </p>
 
                     <h4>Heading 4</h4>
@@ -52,7 +52,7 @@ class Home extends PureComponent {
                         eget laoreet sapien ultricies eu. Proin pellentesque, nisl id commodo placerat, mauris lectus tristique leo, a
                         suscipit magna metus id velit. Morbi feugiat ex ut mi lobortis vulputate. Sed facilisis
                         dignissim odio non convallis. Nullam ac commodo felis. Ut in scelerisque eros. Duis at urna sed sem tincidunt
-                        fringilla.Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
+                        fringilla. Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
                     </p>
 
                     <h5>Heading 5</h5>
@@ -64,7 +64,7 @@ class Home extends PureComponent {
                         eget laoreet sapien ultricies eu. Proin pellentesque, nisl id commodo placerat, mauris lectus tristique leo, a
                         suscipit magna metus id velit. Morbi feugiat ex ut mi lobortis vulputate. Sed facilisis
                         dignissim odio non convallis. Nullam ac commodo felis. Ut in scelerisque eros. Duis at urna sed sem tincidunt
-                        fringilla.Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
+                        fringilla. Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
                     </p>
 
                     <h6>Heading 6</h6>
@@ -76,7 +76,7 @@ class Home extends PureComponent {
                         eget laoreet sapien ultricies eu. Proin pellentesque, nisl id commodo placerat, mauris lectus tristique leo, a
                         suscipit magna metus id velit. Morbi feugiat ex ut mi lobortis vulputate. Sed facilisis
                         dignissim odio non convallis. Nullam ac commodo felis. Ut in scelerisque eros. Duis at urna sed sem tincidunt
-                        fringilla.Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
+                        fringilla. Aenean posuere neque nec mi consectetur, sed dapibus nulla laoreet.
                     </p>
                 </div>
             </main>
