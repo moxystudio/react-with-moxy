@@ -128,7 +128,8 @@ async function runServer(data) {
             memoryFs,
             watchDelay: 50,
             watchOptions: { poll },
-            notify: { icon: `${publicDir}/favicon.ico` }, // OS notifications!
+            // OS notifications! (skip if CI)
+            notify: { icon: !process.env.CI ? `${publicDir}/favicon.ico` : undefined },
         }),
         webpackHotMiddleware(isomorphicCompiler.client.webpackCompiler, {
             log: false,
@@ -172,8 +173,8 @@ async function runServer(data) {
     process.stdout.write('Hot module replacement:    on\n');
     process.stdout.write('\nServer is now up and running, press CTRL-C to stop.\n');
 
-    // Open app in the browser
-    opn(url, { wait: false }).catch(() => {});
+    // Open app in the browser (skip if doing CI)
+    !process.env.CI && opn(url, { wait: false }).catch(() => {});
 }
 
 // ---------------------------------------------------------
