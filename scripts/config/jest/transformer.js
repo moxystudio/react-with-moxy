@@ -1,12 +1,12 @@
 const babel = require('babel-core');
 const { getBabelOptions } = require('../webpack');
 
-const babelOptions = getBabelOptions('client');
+const babelOptions = getBabelOptions('server');
 
 module.exports = {
     process(src, filename) {
         return babel.util.canCompile(filename) ?
-            babel.transform(src, Object.assign({}, { filename }, babelOptions)).code :
+            babel.transform(src, { filename, ...babelOptions }).code :
             src;
     },
 };
