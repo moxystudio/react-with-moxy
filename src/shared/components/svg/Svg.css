@@ -2,7 +2,7 @@
 
 .svg {
     width: 24px;
-    height: auto;
+    height: 24px; /* Must have an height otherwise it will have an extra space on IE11 */
     display: inline-block;
     vertical-align: middle;
     user-select: none;

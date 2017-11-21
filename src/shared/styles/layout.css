@@ -10,6 +10,7 @@
 
 html {
     min-width: 320px;
+    height: 0; /* 3 */
     min-height: 100%; /* 1 */
     display: flex; /* 2 */
     flex-direction: column; /* 2 */
@@ -22,6 +23,7 @@ html {
 /*
    1. Force scroll always to prevent scrollbars to appear/disappear based on the page contents
    2. Make sure that we occupy 100% of our parent and allow our child elements to do the same
+   3. Needed for IE11 otherwise flex wouldn't grow vertically, see https://stackoverflow.com/a/42930574
 */
 
 body {

@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render an inline SVG correctly 1`] = `
+<i
+  className="svg"
+  dangerouslySetInnerHTML={
+    Object {
+      "__html": "moxy-square.inline.svg",
+    }
+  }
+/>
+`;
+
+exports[`should render with the specified className 1`] = `
+<i
+  className="svg foo"
+  dangerouslySetInnerHTML={
+    Object {
+      "__html": "moxy-square.inline.svg",
+    }
+  }
+/>
+`;

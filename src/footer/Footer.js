@@ -10,10 +10,8 @@ class Footer extends PureComponent {
 
         return (
             <footer className={ footerClass }>
-                <a
-                    className={ styles.madeWithMoxyLink }
-                    href="https://moxy.studio"
-                    target="_blank">#madewithmoxy
+                <a className={ styles.madeWithMoxyLink } href="https://moxy.studio" target="_blank" rel="noopener noreferrer">
+                    #madewithmoxy
                 </a>
             </footer>
         );

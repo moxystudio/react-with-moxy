@@ -1,22 +1,22 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import SvgInlineReact from 'svg-inline-react';
 import styles from './Svg.css';
 
-class SvgInline extends PureComponent {
-    render() {
-        const { className, svg, ...props } = this.props;
+const Svg = (props) => {
+    const { svg, className, ...otherProps } = props;
 
-        return (
-            <SvgInlineReact className={ classnames(styles.svg, className) } src={ svg } { ...props } />
-        );
-    }
+    return (
+        <i
+            className={ classnames(styles.svg, className) }
+            { ...otherProps }
+            dangerouslySetInnerHTML={ { __html: svg } } />
+    );
+};
 
-    static propTypes = {
-        svg: PropTypes.string.isRequired,
-        className: PropTypes.string,
-    }
-}
+Svg.propTypes = {
+    svg: PropTypes.string.isRequired,
+    className: PropTypes.string,
+};
 
-export default SvgInline;
+export default Svg;

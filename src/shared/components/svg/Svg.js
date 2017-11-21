@@ -1,29 +1,25 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import styles from './Svg.css';
 
 // See: https://github.com/Karify/external-svg-sprite-loader
 
-class Svg extends PureComponent {
-    render() {
-        const { svg, className, title, ...props } = this.props;
+const SvgInline = (props) => {
+    const { svg, className, ...otherProps } = props;
 
-        return (
-            <i className={ classnames(styles.svg, className) }>
-                <svg viewBox={ svg.viewBox } { ...props }>
-                    { title ? <title>{ title }</title> : null }
-                    <use xlinkHref={ svg.symbol } />
-                </svg>
-            </i>
-        );
-    }
+    return (
+        <i className={ classnames(styles.svg, className) } { ...otherProps }>
+            <svg viewBox={ svg.viewBox }>
+                <use xlinkHref={ svg.symbol } />
+            </svg>
+        </i>
+    );
+};
 
-    static propTypes = {
-        svg: PropTypes.object.isRequired,
-        title: PropTypes.string,
-        className: PropTypes.string,
-    }
-}
+SvgInline.propTypes = {
+    svg: PropTypes.object.isRequired,
+    className: PropTypes.string,
+};
 
-module.exports = Svg;
+export default SvgInline;

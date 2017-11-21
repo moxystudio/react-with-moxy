@@ -4,14 +4,14 @@
     "extends": [
         "eslint-config-moxy/es8",
         "eslint-config-moxy/addons/browser",
+        "eslint-config-moxy/addons/node",
         "eslint-config-moxy/addons/es6-modules",
         "eslint-config-moxy/addons/react",
-        "eslint-config-moxy/addons/object-spread"
+        "eslint-config-moxy/addons/node",
+        "eslint-config-moxy/addons/object-spread",
+        "eslint-config-moxy/addons/jest"
     ],
-    "globals": {
-        "process": false,
-        "__SERVER__": false,
-        "__CLIENT__": false,
-        "__DEV__": false
+    "rules": {
+        "global-require": 0
     }
 }
