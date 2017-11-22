@@ -44,7 +44,6 @@ const argv = yargs
 function prepare() {
     // Force ENV to production
     process.env.NODE_ENV = 'production';
-    process.env.BABEL_ENV = 'production';
 
     // Clean previous build
     rimraf.sync(`${publicDir}/build`);

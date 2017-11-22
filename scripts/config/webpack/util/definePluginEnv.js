@@ -16,7 +16,6 @@ function definePluginEnv() {
         // Useful for determining whether we’re running in production mode
         // Most importantly, it switches React into the correct mode
         NODE_ENV: process.env.NODE_ENV,
-        BABEL_ENV: process.env.BABEL_ENV,
 
         // Useful to build full urls to be used in stuff like share URLs
         PUBLIC_URL: process.env.PUBLIC_URL,
