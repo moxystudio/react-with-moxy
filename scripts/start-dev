@@ -134,22 +134,21 @@ async function runServer(data) {
             log: false,
         }),
         (req, res, next) => {
-            const { locals } = res;
+            const { isomorphicCompilation } = res.locals;
 
-            locals.exports = locals.isomorphicCompilation.exports;
-            locals.buildManifest = locals.buildManifest || buildManifest(locals.isomorphicCompilation.stats);
+            isomorphicCompilation.buildManifest = isomorphicCompilation.buildManifest || buildManifest(isomorphicCompilation.stats);
             next();
         },
         // Call `render()` from the server bundle
         (req, res, next) => {
-            const { exports, buildManifest } = res.locals;
+            const { exports, buildManifest } = res.locals.isomorphicCompilation;
 
             Promise.resolve(exports.render({ req, res, buildManifest }))
             .catch(next);
         },
         // Call `renderError()` on errors
         (err, req, res, next) => {
-            const { exports, buildManifest } = res.locals;
+            const { exports, buildManifest } = res.locals.isomorphicCompilation;
 
             // Skip if there's no defined `renderError` or if we don't have any exports, e.g.: compilation failed
             if (!exports || !exports.renderError) {
