@@ -104,33 +104,10 @@ module.exports = ({ minify } = {}) => {
                             },
                             {
                                 loader: require.resolve('postcss-loader'),
-                                options: {
-                                    plugins: [
-                                        // Let postcss parse @import statements
-                                        require('postcss-import')({
-                                            // Any non-relative imports are resolved to this path
-                                            path: `${constants.srcDir}/shared/styles/imports`,
-                                        }),
-                                        // Add support for CSS mixins
-                                        require('postcss-mixins'),
-                                        // Add support for CSS variables using postcss-css-variables
-                                        // instead of cssnext one, which is more powerful
-                                        require('postcss-css-variables')(),
-                                        // Use CSS next, disabling some features
-                                        require('postcss-cssnext')({
-                                            features: {
-                                                overflowWrap: true,
-                                                rem: false,               // Not necessary for our browser support
-                                                colorRgba: false,         // Not necessary for our browser support
-                                                customProperties: false,  // We are using postcss-css-variables instead
-                                                autoprefixer: {
-                                                    browsers: ['last 2 versions', 'IE >= 11', 'android >= 4.4.4'],
-                                                    remove: false, // No problem disabling, we use prefixes when really necessary
-                                                },
-                                            },
-                                        }),
-                                    ],
-                                },
+                                options: require('postcss-preset-moxy')({
+                                    // Any non-relative imports are resolved to this path
+                                    importPath: path.join(constants.srcDir, 'shared/styles/imports'),
+                                }),
                             },
                         ],
                     }),
