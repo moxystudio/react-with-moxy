@@ -64,6 +64,7 @@ module.exports = ({ minify } = {}) => {
                                     [require.resolve('babel-preset-moxy'), {
                                         targets: ['node'],
                                         react: true,
+                                        namedDefaultExport: false,
                                     }],
                                 ],
                                 plugins: [
