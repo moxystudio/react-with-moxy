@@ -18,6 +18,7 @@
     "type": "git",
     "url": "git@github.com:project-org/project-name"
   },
+  "private": true,
   "scripts": {
     "build": "node scripts/build",
     "start": "node scripts/start",
