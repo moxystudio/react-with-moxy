@@ -13,6 +13,7 @@ const pify = require('pify');
 const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
 const webpackIsomorphicDevMiddleware = require('webpack-isomorphic-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const { render, renderError } = require('./middlewares/render');
 const { getConfig: getWebpackConfig } = require('./config/webpack');
 const { build: buildManifest } = require('./util/manifest');
 const { publicDir } = require('./util/constants');
@@ -139,25 +140,9 @@ async function runServer(data) {
             isomorphicCompilation.buildManifest = isomorphicCompilation.buildManifest || buildManifest(isomorphicCompilation.stats);
             next();
         },
-        // Call `render()` from the server bundle
-        (req, res, next) => {
-            const { exports, buildManifest } = res.locals.isomorphicCompilation;
-
-            Promise.resolve(exports.render({ req, res, buildManifest }))
-            .catch(next);
-        },
-        // Call `renderError()` on errors
-        (err, req, res, next) => {
-            const { exports, buildManifest } = res.locals.isomorphicCompilation;
-
-            // Skip if there's no defined `renderError` or if we don't have any exports, e.g.: compilation failed
-            if (!exports || !exports.renderError) {
-                return next(err);
-            }
-
-            Promise.resolve(exports.renderError({ err, req, res, buildManifest }))
-            .catch(next);
-        }
+        // Setup the render middlewares that will call render() & renderError()
+        render(),
+        renderError()
     );
 
     // Start server
