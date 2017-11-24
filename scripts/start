@@ -9,6 +9,7 @@ const pify = require('pify');
 const internalIp = require('internal-ip');
 const express = require('express');
 const compression = require('compression');
+const { render, renderError } = require('./middlewares/render');
 const { read: readBuildManifest } = require('./util/manifest');
 const { publicDir } = require('./util/constants');
 
@@ -105,29 +106,15 @@ async function runServer(data) {
     app.use(
         // There's no compilation to be done, just set the `res.locals`
         (req, res, next) => {
-            res.locals.exports = data.exports;
-            res.locals.buildManifest = data.buildManifest;
+            res.locals.isomorphicCompilation = {
+                exports: data.exports,
+                buildManifest: data.buildManifest,
+            };
             next();
         },
-        // Call `render()` from the server bundle to render the app
-        (req, res, next) => {
-            const { exports, buildManifest } = res.locals;
-
-            Promise.resolve(exports.render({ req, res, buildManifest }))
-            .catch(next);
-        },
-        // Call `renderError(err)` from the server bundle on errors
-        (err, req, res, next) => {
-            const { exports, buildManifest } = res.locals;
-
-            // Skip if there's no defined `renderError`
-            if (!exports.renderError) {
-                return next(err);
-            }
-
-            Promise.resolve(exports.renderError({ err, req, res, buildManifest }))
-            .catch(next);
-        }
+        // Setup the render middlewares that will call render() & renderError()
+        render(),
+        renderError()
     );
 
     // Start server
