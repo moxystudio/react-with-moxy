@@ -79,14 +79,13 @@ function build({ client: clientStats, server: serverStats }) {
 
 function write(stats) {
     const manifest = build(stats);
-    const manifestJson = JSON.stringify(manifest, null, 4);
     const manifestFile = path.join(publicDir, 'build/build-manifest.json');
 
     try {
-        fs.writeFileSync(manifestFile, manifestJson);
+        fs.writeFileSync(manifestFile, JSON.stringify(manifest, null, 4));
     } catch (err) {
-        err.message = `Could not write manifest file on ${path.relative('', manifestFile)}`;
-        err.detail = err.code === 'ENOENT' ? 'Did you forgot to build the project?' : err.message;
+        err.detail = `Could not write manifest file on ${path.relative('', manifestFile)}`;
+        err.detail = err.code === 'ENOENT' ? '\nDid you forgot to build the project?' : '';
 
         throw err;
     }
@@ -96,18 +95,15 @@ function write(stats) {
 
 function read() {
     const manifestFile = path.join(publicDir, 'build/build-manifest.json');
-    let manifestJson;
 
     try {
-        manifestJson = fs.readFileSync(manifestFile);
+        return JSON.parse(fs.readFileSync(manifestFile));
     } catch (err) {
-        err.message = `Could not read manifest file on ${path.relative('', manifestFile)}`;
-        err.detail = err.code === 'ENOENT' ? 'Did you forgot to build the project?' : err.message;
+        err.detail = `Could not read manifest file on ${path.relative('', manifestFile)}`;
+        err.detail += err.code === 'ENOENT' ? '\nDid you forgot to build the project?' : '';
 
         throw err;
     }
-
-    return JSON.parse(manifestJson);
 }
 
 module.exports = {
