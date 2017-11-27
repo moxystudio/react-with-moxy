@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import styles from './Svg.css';
+import styles from './SvgInline.css';
 
-const Svg = (props) => {
+const SvgInline = (props) => {
     const { svg, className, ...otherProps } = props;
 
     return (
@@ -14,9 +14,9 @@ const Svg = (props) => {
     );
 };
 
-Svg.propTypes = {
+SvgInline.propTypes = {
     svg: PropTypes.string.isRequired,
     className: PropTypes.string,
 };
 
-export default Svg;
+export default SvgInline;

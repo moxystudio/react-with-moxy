@@ -5,7 +5,7 @@ import styles from './Svg.css';
 
 // See: https://github.com/Karify/external-svg-sprite-loader
 
-const SvgInline = (props) => {
+const Svg = (props) => {
     const { svg, className, ...otherProps } = props;
 
     return (
@@ -17,9 +17,9 @@ const SvgInline = (props) => {
     );
 };
 
-SvgInline.propTypes = {
+Svg.propTypes = {
     svg: PropTypes.object.isRequired,
     className: PropTypes.string,
 };
 
-export default SvgInline;
+export default Svg;
