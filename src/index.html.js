@@ -1,6 +1,6 @@
 import config from 'shared/config';
 
-export default function renderDocument({ helmet, rootHtml, buildManifest }) {
+export function openDocument({ helmet, buildManifest }) {
     const { assets } = buildManifest;
 
     return `
@@ -24,9 +24,13 @@ export default function renderDocument({ helmet, rootHtml, buildManifest }) {
                 ${assets.secondary.map((asset) => `<link rel="prefetch" href="${asset.url}">`).join('\n')}
             </head>
             <body>
-                <!-- Root element where app goes -->
-                <div id="root">${rootHtml}</div>
+                <div id="root">`;
+}
 
+export function closeDocument({ buildManifest }) {
+    const { assets } = buildManifest;
+
+    return `</div>
                 <!-- Load JS assets -->
                 ${assets.js.map((asset) => `<script src="${asset.url}"></script>`).join('\n')}
 

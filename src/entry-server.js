@@ -1,11 +1,12 @@
 import 'babel-polyfill';
 import React from 'react';
-import { renderToString } from 'react-dom/server';
+import { renderToNodeStream } from 'react-dom/server';
+import promiseFromStream from 'promise-from-stream';
 import { match, RouterContext, createMemoryHistory } from 'react-router';
 import Helmet from 'react-helmet';
 import pify from 'pify';
 import { buildRoutes } from './App';
-import renderDocument from './index.html';
+import { openDocument, closeDocument } from './index.html';
 
 const matchAsync = pify(match, { multiArgs: true });
 
@@ -26,23 +27,22 @@ export async function render({ req, res, buildManifest }) {
         return res.status(404).end();
     }
 
+    // Render initial part of the document
+    res.write(openDocument({ helmet: Helmet.renderStatic(), buildManifest }));
+
     // Render HTML that goes to into <div id="root"></div>
-    const createElement = (Component, props) => <Component { ...props } serverContext={ { req, res } } />;
-    const rootHtml = renderToString(
+    const rootHtmlStream = renderToNodeStream(
         <RouterContext
             { ...renderProps }
-            createElement={ createElement } />
+            createElement={ (Component, props) => <Component { ...props } serverContext={ { req, res } } /> } />
     );
 
-    // Render document
-    const html = renderDocument({
-        helmet: Helmet.renderStatic(),
-        rootHtml,
-        buildManifest,
-    });
+    rootHtmlStream.pipe(res, { end: false });
+    await promiseFromStream(rootHtmlStream);
 
-    // Send HTML
-    res.send(html);
+    // Finally close the document
+    res.write(closeDocument({ buildManifest }));
+    res.end();
 }
 
 export async function renderError({ err, req, res, buildManifest }) {
@@ -59,21 +59,21 @@ export async function renderError({ err, req, res, buildManifest }) {
         throw err;
     }
 
-    // Render page that goes to into <div id="root"></div>
-    const createElement = (Component, props) => <Component { ...props } serverContext={ { err, req, res } } />;
-    const rootHtml = renderToString(
+    // Render initial part of the document
+    res.write(openDocument({ helmet: Helmet.renderStatic(), buildManifest }));
+
+    // Render HTML that goes to into <div id="root"></div>
+    const rootHtmlStream = renderToNodeStream(
         <RouterContext
             { ...renderProps }
-            createElement={ createElement } />
+            createElement={ (Component, props) => <Component { ...props } serverContext={ { req, res } } /> } />
     );
 
-    // Render document
-    const html = renderDocument({
-        helmet: Helmet.renderStatic(),
-        rootHtml,
-        buildManifest,
-    });
+    rootHtmlStream.pipe(res, { end: false });
 
-    // Send HTML
-    res.send(html);
+    await promiseFromStream(rootHtmlStream);
+
+    // Finally close the document
+    res.write(closeDocument({ buildManifest }));
+    res.end();
 }
