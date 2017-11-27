@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import styles from './SvgInline.css';
+import styles from './Svg.css';
 
 const SvgInline = (props) => {
     const { svg, className, ...otherProps } = props;
