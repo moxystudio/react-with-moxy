@@ -1,14 +1,19 @@
 const { compose } = require('compose-middleware');
-const interceptor = require('express-interceptor');
-const nocache = require('nocache')();
+const wrap = require('lodash/wrap');
 
 function render() {
     return compose([
-        // Set no-cache unless a specific page defined a cache-control policy
-        interceptor((req, res) => ({
-            isInterceptable: () => !res.get('cache-control'),
-            intercept: (body, send) => nocache(req, res, () => send(body)),
-        })),
+        // Disable browser caching unless a specific page defined a cache-control policy
+        (req, res, next) => {
+            res.writeHead = wrap(res.writeHead, (writeHeaders, ...args) => {
+                if (!res.get('Cache-control')) {
+                    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+                }
+
+                writeHeaders.apply(res, args);
+            });
+            next();
+        },
         // Call `render()` from the server bundle
         (req, res, next) => {
             const { exports, buildManifest } = res.locals.isomorphicCompilation;
