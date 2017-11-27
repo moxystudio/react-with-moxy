@@ -27,6 +27,11 @@ function render() {
 function renderError() {
     // Call `renderError()` on errors
     return (err, req, res, next) => {
+        // Skip if response was already sent
+        if (res.headersSent) {
+            return next(err);
+        }
+
         const { exports, buildManifest } = res.locals.isomorphicCompilation;
 
         // Skip if there's no defined `renderError`
