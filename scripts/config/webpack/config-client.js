@@ -13,7 +13,7 @@ const HotModuleReplacementPlugin = require('webpack/lib/HotModuleReplacementPlug
 const NoEmitOnErrorsPlugin = require('webpack/lib/NoEmitOnErrorsPlugin');
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 const ModuleConcatenationPlugin = require('webpack/lib/optimize/ModuleConcatenationPlugin');
-const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
