@@ -6,6 +6,7 @@ const yargs = require('yargs');
 const planify = require('planify');
 const rimraf = require('rimraf');
 const getPort = require('get-port');
+const yn = require('yn');
 const internalIp = require('internal-ip');
 const express = require('express');
 const opn = require('opn');
@@ -44,12 +45,12 @@ const argv = yargs
 })
 .option('poll', {
     type: 'boolean',
-    default: process.env.WEBPACK_DEV_POOL === '1',
+    default: yn(process.env.WEBPACK_DEV_POOL, { default: false }),
     describe: 'Use polling when watching for file changes, disable it if you are having issues with polling (defaults to automatic)',
 })
 .option('memory-fs', {
     type: 'boolean',
-    default: process.env.WEBPACK_DEV_MEMORY_FS !== '0',
+    default: yn(process.env.WEBPACK_DEV_POOL, { default: true }),
     describe: 'Use an in-memory filesystem instead of writing assets to disk (recommended)',
 })
 .option('reporter', {
