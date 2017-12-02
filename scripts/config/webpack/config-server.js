@@ -19,8 +19,8 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 module.exports = ({ minify } = {}) => {
     const {
         NODE_ENV: env,
+        SITE_URL: siteUrl,
         PUBLIC_URL: publicUrl,
-        PUBLIC_ASSETS_URL: publicAssetsUrl,
     } = process.env;
     const isDev = env === 'development';
 
@@ -28,13 +28,12 @@ module.exports = ({ minify } = {}) => {
         context: constants.projectDir,
         entry: {
             'server-bundle': [
-                // 'babel-polyfill', // Do not uncomment, included only once in server and server-dev
                 constants.entryServerFile,
             ],
         },
         output: {
             path: `${constants.publicDir}/build/`,
-            publicPath: `${publicAssetsUrl}/`,
+            publicPath: `${publicUrl}/build/`,
             filename: '[name].js',
             libraryTarget: 'this',
         },
@@ -124,7 +123,7 @@ module.exports = ({ minify } = {}) => {
                             options: {
                                 name: isDev ? 'images/svg-sprite.svg' : 'images/svg-sprite.[hash:15].svg',
                                 // Force publicPath to be local because external SVGs doesn't work on CDNs
-                                ...!sameOrigin(publicAssetsUrl, publicUrl) ? { publicPath: `${publicUrl}/build/` } : {},
+                                ...!sameOrigin(publicUrl, siteUrl) ? { publicPath: `${siteUrl}/build/` } : {},
                             },
                         },
                         // Uniquify classnames and ids so that if svgxuse injects the sprite into the body,

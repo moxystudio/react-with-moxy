@@ -4,11 +4,10 @@ const validEnvironments = ['production', 'development', 'test'];
 
 function definePluginEnv() {
     assert(validEnvironments.includes(process.env.NODE_ENV), `Expecting NODE_ENV to be one of: ${validEnvironments.join(', ')}`);
+    assert(process.env.SITE_URL != null, 'Expecting SITE_URL environment variable to be defined');
     assert(process.env.PUBLIC_URL != null, 'Expecting PUBLIC_URL environment variable to be defined');
-    assert(process.env.PUBLIC_ASSETS_URL != null, 'Expecting PUBLIC_URL environment variable to be defined');
 
-    // Grab NODE_ENV and RWM_* environment variables and prepare them to be
-    // injected into the application via DefinePlugin in Webpack configuration
+    // Grab NODE_ENV, SITE_URL, PUBLIC_URL and RWM_* environment variables
     const env = Object.keys(process.env)
     .filter((key) => /RWM_/.test(key))
     .reduce((env, key) => {
@@ -17,13 +16,12 @@ function definePluginEnv() {
         return env;
     }, {
         // Useful for determining whether we’re running in production mode
-        // Most importantly, it switches React into the correct mode
+        // Most importantly, it switches libraries like React into the correct mode
         NODE_ENV: process.env.NODE_ENV,
-
         // Useful to build full urls to be used in stuff like share URLs
-        PUBLIC_URL: process.env.PUBLIC_URL.replace(/\/+$/, ''),
+        SITE_URL: process.env.SITE_URL.replace(/\/+$/, ''),
         // Useful for resolving the correct path to static assets in `public` folder
-        PUBLIC_ASSETS_URL: process.env.PUBLIC_ASSETS_URL.replace(/\/+$/),
+        PUBLIC_URL: process.env.PUBLIC_URL.replace(/\/+$/),
     });
 
     // Stringify all values so we can feed into Webpack DefinePlugin
