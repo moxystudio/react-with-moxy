@@ -85,7 +85,7 @@ function write(stats) {
         fs.writeFileSync(manifestFile, JSON.stringify(manifest, null, 4));
     } catch (err) {
         err.detail = `Could not write manifest file on ${path.relative('', manifestFile)}`;
-        err.detail = err.code === 'ENOENT' ? '\nDid you forgot to build the project?' : '';
+        err.detail += err.code === 'ENOENT' ? `\nDid you forgot to create ${path.relative('', `${publicDir}/build`)}?` : '';
 
         throw err;
     }
