@@ -9,9 +9,9 @@ module.exports = {
 
     transform: {
         '\\.js$': require.resolve('./transformer'),
-        '\\.(png|jpg|jpeg|gif|inline\\.svg)$': require.resolve('jest-file'), // Only inline svgs are targeted
-        '\\.(webp|eot|ttf|woff|woff2|otf)$': require.resolve('jest-file'),
-        '\\.(mp3|flac|wav|aac|ogg|oga|mp4|webm|ogv)$': require.resolve('jest-file'),
+        '\\.(png|jpg|jpeg|gif|inline\\.svg|webp)$': require.resolve('jest-file'), // Only inline svgs are targeted
+        '\\.(eot|ttf|woff|woff2|otf)$': require.resolve('jest-file'),
+        '\\.(mp3|flac|wav|aac|ogg|oga|mp4|m4a|webm|ogv)$': require.resolve('jest-file'),
     },
     transformIgnorePatterns: [
         'node_modules',

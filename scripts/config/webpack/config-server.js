@@ -183,7 +183,7 @@ module.exports = ({ minify } = {}) => {
                 },
                 // Audio & video
                 {
-                    test: /\.(mp3|flac|wav|aac|ogg|oga|mp4|webm|ogv)$/,
+                    test: /\.(mp3|flac|wav|aac|ogg|oga|mp4|m4a|webm|ogv)$/,
                     loader: require.resolve('file-loader'),
                     options: {
                         name: isDev ? 'playback/[name].[ext]' : 'playback/[name].[hash:15].[ext]',
