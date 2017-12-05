@@ -7,9 +7,9 @@ function definePluginEnv() {
     assert(process.env.SITE_URL != null, 'Expecting SITE_URL environment variable to be defined');
     assert(process.env.PUBLIC_URL != null, 'Expecting PUBLIC_URL environment variable to be defined');
 
-    // Grab NODE_ENV, SITE_URL, PUBLIC_URL and RWM_* environment variables
+    // Grab NODE_ENV, SITE_URL, PUBLIC_URL and REACT_APP_* environment variables
     const env = Object.keys(process.env)
-    .filter((key) => /RWM_/.test(key))
+    .filter((key) => /REACT_APP_/.test(key))
     .reduce((env, key) => {
         env[key] = process.env[key];
 

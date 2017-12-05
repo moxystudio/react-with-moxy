@@ -3,5 +3,5 @@
 
 export default {
     // Google tracking code used for Google Analytics and other google services
-    googleTrackingCode: process.env.RWM_GA_TRACKING_CODE,
+    googleTrackingCode: process.env.REACT_APP_GA_TRACKING_CODE,
 };
