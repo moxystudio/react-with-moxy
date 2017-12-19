@@ -7,6 +7,7 @@ const yargs = require('yargs');
 const planify = require('planify');
 const rimraf = require('rimraf');
 const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
+const webpackIsomorphicCompilerReporter = require('webpack-isomorphic-compiler-reporter');
 const { getConfig: getWebpackConfig } = require('./config/webpack');
 const { write: writeBuildManifest } = require('./util/manifest');
 const { publicDir } = require('./util/constants');
@@ -58,14 +59,17 @@ async function build(data, { minify }) {
 
     // Compile both the client & server
     const isomorphicCompiler = webpackIsomorphicCompiler(clientConfig, serverConfig);
-    const stats = await isomorphicCompiler.run({ report: true });
 
-    // Assign the webpack stats
-    data.stats = stats;
+    webpackIsomorphicCompilerReporter(isomorphicCompiler);
+
+    const compilation = await isomorphicCompiler.run({ report: true });
+
+    // Assign the compilation to be used below
+    data.compilation = compilation;
 }
 
-function createBuildManifest(data) {
-    writeBuildManifest(data.stats);
+function createBuildManifest({ compilation }) {
+    writeBuildManifest(compilation);
 
     process.stdout.write(`Manifest successfully created in the ${path.relative('', `${publicDir}/build`)} folder.\n`);
 }

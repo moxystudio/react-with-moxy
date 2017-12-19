@@ -106,7 +106,7 @@ async function runServer(data) {
     app.use(
         // There's no compilation to be done, just set the `res.locals`
         (req, res, next) => {
-            res.locals.isomorphicCompilation = {
+            res.locals.isomorphic = {
                 exports: data.exports,
                 buildManifest: data.buildManifest,
             };

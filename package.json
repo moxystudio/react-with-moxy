@@ -119,10 +119,10 @@
     "svgo-loader": "^2.0.0",
     "uglifyjs-webpack-plugin": "^1.1.0",
     "webpack": "^3.8.1",
-    "webpack-dev-middleware": "^1.10.0",
     "webpack-hot-middleware": "^2.16.1",
-    "webpack-isomorphic-compiler": "^1.1.4",
-    "webpack-isomorphic-dev-middleware": "^2.0.0",
+    "webpack-isomorphic-compiler": "^2.0.0",
+    "webpack-isomorphic-compiler-reporter": "^1.0.2",
+    "webpack-isomorphic-dev-middleware": "^3.0.0",
     "webpack-sort-chunks": "^0.1.0",
     "yn": "^2.0.0"
   },

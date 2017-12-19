@@ -50,7 +50,7 @@ function removeServerBundle(manifest, stats) {
 
 // ---------------------------------------------------
 
-function build({ client: clientStats, server: serverStats }) {
+function build({ clientStats, serverStats }) {
     // Convert stats to objects
     clientStats = clientStats.toJson();
     serverStats = serverStats.toJson();

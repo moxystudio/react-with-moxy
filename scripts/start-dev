@@ -136,9 +136,9 @@ async function runServer(data) {
             log: false,
         }),
         (req, res, next) => {
-            const { isomorphicCompilation } = res.locals;
+            const { isomorphic } = res.locals;
 
-            isomorphicCompilation.buildManifest = isomorphicCompilation.buildManifest || buildManifest(isomorphicCompilation.stats);
+            isomorphic.buildManifest = isomorphic.buildManifest || buildManifest(isomorphic.compilation);
             next();
         },
         // Setup the render middlewares that will call render() & renderError()

@@ -16,7 +16,7 @@ function render() {
         },
         // Call `render()` from the server bundle
         (req, res, next) => {
-            const { exports, buildManifest } = res.locals.isomorphicCompilation;
+            const { exports, buildManifest } = res.locals.isomorphic;
 
             Promise.resolve(exports.render({ req, res, buildManifest }))
             .catch(next);
@@ -32,7 +32,7 @@ function renderError() {
             return next(err);
         }
 
-        const { exports, buildManifest } = res.locals.isomorphicCompilation;
+        const { exports, buildManifest } = res.locals.isomorphic;
 
         // Skip if there's no defined `renderError`
         if (!exports || !exports.renderError) {
