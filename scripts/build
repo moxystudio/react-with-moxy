@@ -62,10 +62,8 @@ async function build(data, { minify }) {
 
     webpackIsomorphicCompilerReporter(isomorphicCompiler);
 
-    const compilation = await isomorphicCompiler.run({ report: true });
-
-    // Assign the compilation to be used below
-    data.compilation = compilation;
+    // Compile and assign the result to be used below
+    data.compilation = await isomorphicCompiler.run({ report: true });
 }
 
 function createBuildManifest({ compilation }) {
