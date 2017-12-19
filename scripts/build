@@ -63,7 +63,7 @@ async function build(data, { minify }) {
     webpackIsomorphicCompilerReporter(isomorphicCompiler);
 
     // Compile and assign the result to be used below
-    data.compilation = await isomorphicCompiler.run({ report: true });
+    data.compilation = await isomorphicCompiler.run();
 }
 
 function createBuildManifest({ compilation }) {
@@ -77,7 +77,7 @@ function createBuildManifest({ compilation }) {
 // ---------------------------------------------------------
 
 planify()
-.step('Preparing', () => prepare())
+.step('Preparing', prepare)
 .step('Building project with webpack', { slow: 15000 }, (data) => build(data, argv))
-.step('Creating build manifest', (data) => createBuildManifest(data))
+.step('Creating build manifest', createBuildManifest)
 .run({ exit: true, reporter: argv.reporter });

@@ -134,7 +134,7 @@ async function runServer(data) {
 // ---------------------------------------------------------
 
 planify()
-.step('Preparing', (data) => prepare(data))
-.step('Running server', (data) => runServer(data))
+.step('Preparing', prepare)
+.step('Running server', runServer)
 .run({ reporter: argv.reporter })
 .catch((err) => process.exit(err.exitCode || 1));
