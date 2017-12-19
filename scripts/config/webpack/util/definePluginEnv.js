@@ -5,7 +5,9 @@ const validEnvironments = ['production', 'development', 'test'];
 function definePluginEnv() {
     assert(validEnvironments.includes(process.env.NODE_ENV), `Expecting NODE_ENV to be one of: ${validEnvironments.join(', ')}`);
     assert(process.env.SITE_URL != null, 'Expecting SITE_URL environment variable to be defined');
+    assert(!process.env.SITE_URL.endsWith('/'), 'SITE_URL environment variable must not end with /');
     assert(process.env.PUBLIC_URL != null, 'Expecting PUBLIC_URL environment variable to be defined');
+    assert(!process.env.PUBLIC_URL.endsWith('/'), 'PUBLIC_URL environment variable must not end with /');
 
     // Grab NODE_ENV, SITE_URL, PUBLIC_URL and REACT_APP_* environment variables
     const env = Object.keys(process.env)
@@ -19,9 +21,9 @@ function definePluginEnv() {
         // Most importantly, it switches libraries like React into the correct mode
         NODE_ENV: process.env.NODE_ENV,
         // Useful to build full urls to be used in stuff like share URLs
-        SITE_URL: process.env.SITE_URL.replace(/\/+$/, ''),
+        SITE_URL: process.env.SITE_URL,
         // Useful for resolving the correct path to static assets in `public` folder
-        PUBLIC_URL: process.env.PUBLIC_URL.replace(/\/+$/),
+        PUBLIC_URL: process.env.PUBLIC_URL,
     });
 
     // Stringify all values so we can feed into Webpack DefinePlugin
