@@ -47,7 +47,7 @@
   },
   "commitlint": {
     "extends": [
-      "@commitlint/config-angular"
+      "@commitlint/config-conventional"
     ]
   },
   "dependencies": {
@@ -75,8 +75,8 @@
     "yargs": "^10.0.3"
   },
   "devDependencies": {
-    "@commitlint/cli": "^5.0.1",
-    "@commitlint/config-angular": "^4.3.0",
+    "@commitlint/cli": "^5.2.4",
+    "@commitlint/config-conventional": "^5.2.3",
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.0.2",
     "babel-loader": "^7.1.2",
