@@ -9,7 +9,7 @@ const getPort = require('get-port');
 const yn = require('yn');
 const internalIp = require('internal-ip');
 const express = require('express');
-const opn = require('opn');
+const openBrowser = require('react-dev-utils/openBrowser');
 const pify = require('pify');
 const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
 const webpackIsomorphicDevMiddleware = require('webpack-isomorphic-dev-middleware');
@@ -158,7 +158,7 @@ async function runServer(data) {
     process.stdout.write('\nServer is now up and running, press CTRL-C to stop.\n');
 
     // Open app in the browser (skip if doing CI)
-    !process.env.CI && opn(url, { wait: false }).catch(() => {});
+    !process.env.CI && openBrowser(url);
 }
 
 // ---------------------------------------------------------
