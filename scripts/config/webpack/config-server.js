@@ -32,7 +32,7 @@ module.exports = ({ minify } = {}) => {
             ],
         },
         output: {
-            path: `${constants.publicDir}/build/`,
+            path: path.join(constants.publicDir, 'build'),
             publicPath: `${publicUrl}/build/`,
             filename: '[name].js',
             libraryTarget: 'this',
@@ -116,7 +116,7 @@ module.exports = ({ minify } = {}) => {
                 // inline SVGs, see: https://github.com/moxystudio/react-with-moxy/issues/6
                 {
                     test: /\.svg$/,
-                    exclude: [/\.inline\.svg$/, `${constants.srcDir}/shared/media/fonts`],
+                    exclude: [/\.inline\.svg$/, path.join(constants.srcDir, 'shared/media/fonts')],
                     use: [
                         {
                             loader: require.resolve('external-svg-sprite-loader'),
