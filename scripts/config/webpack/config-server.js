@@ -221,7 +221,6 @@ module.exports = ({ minify } = {}) => {
             new SvgStorePlugin({ emit: false }),
             // Minify JS
             minify && new UglifyJsPlugin({
-                extractComments: true,
                 parallel: true,
                 cache: true,
                 uglifyOptions: {
