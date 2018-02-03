@@ -2,3 +2,5 @@ language: node_js
 node_js:
   - "node"
   - "lts/*"
+before_install:
+  - cp .env.sample .env
