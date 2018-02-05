@@ -226,8 +226,8 @@ module.exports = ({ minify } = {}) => {
                 uglifyOptions: {
                     mangle: true,
                     compress: {
-                        warnings: false,     // Mute warnings
-                        drop_console: true,  // Drop console.* statements
+                        warnings: false, // Mute warnings
+                        drop_console: true, // Drop console.* statements
                         drop_debugger: true, // Drop debugger statements
                     },
                 },
