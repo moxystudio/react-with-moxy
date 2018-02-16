@@ -115,10 +115,10 @@ $ npm run release
 
 We use conventional commit messages. When running this command it will run [**standard-version**](https://github.com/conventional-changelog/standard-version) that does the following:
 
-1. bump the version in package.json (based on your commit history).
-2. uses conventional-changelog to update CHANGELOG.md.
-3. commits package.json and CHANGELOG.md.
-4. tags a new release.
+1. Bump the version in package.json (based on your commit history)
+2. Uses conventional-changelog to update CHANGELOG.md
+3. Commits package.json and CHANGELOG.md
+4. Tags a new release
 
 And after the tagging step, it will run `git push --follow-tags origin master`, as defined [here](package.json#L35).
 
