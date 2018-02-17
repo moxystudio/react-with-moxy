@@ -19,7 +19,7 @@ Opinionated boilerplate to create isomorphic react applications.
 
 Isomorphic JavaScript applications can be pretty challenging and hard to setup.
 
-`react-with-moxy` offers you the required tooling for your universal JavaScript application, aswell as an opinionated frontend stack ready to kick-off your next project.
+`react-with-moxy` offers you the required tooling for your universal JavaScript application, as well as an opinionated frontend stack ready to kick-off your next project.
 
 We aim to remove all the tooling to [react-scripts](https://github.com/moxystudio/react-with-moxy-scripts), which will abstract all the complexity behind setting up webpack, server-side rendering and other complex tasks.
 
@@ -161,7 +161,7 @@ This file is ignored in source control and it is intended to be created from `.e
 
 ### Customizing the server
 
-You may teak the express server on `start` and `start-dev` scripts:
+You may tweak the express server on `start` and `start-dev` scripts:
 
 ```sh
 └── scripts
@@ -209,7 +209,7 @@ The `build-manifest.json` file contains a summary of the build, including the pr
 
 **How can I import an SVG as inline instead of adding it to the sprite?**
 
-Sometimes, you may want to import an SVG as inline either because you want to animate SVG paths or if you just are having issues with the sprite. If that is the case, you may change the file suffix from `.svg` to `.inline.svg` to import the SVG contents directly:
+Sometimes, you may want to import an SVG as inline either because you want to animate SVG paths or if you're just having issues with the sprite. If that is the case, you may change the file suffix from `.svg` to `.inline.svg` to import the SVG contents directly:
 
 ```js
 import someSvg from './some.inline.svg';
