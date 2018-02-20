@@ -3,7 +3,7 @@
 const path = require('path');
 const sameOrigin = require('same-origin');
 const constants = require('../../util/constants');
-const definePluginEnv = require('./util/definePluginEnv');
+const { getEnvVariables, inlineEnvVariables } = require('./util/env');
 
 // Webpack plugins
 const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
@@ -24,6 +24,7 @@ module.exports = ({ minify } = {}) => {
         PUBLIC_URL: publicUrl,
     } = process.env;
     const isDev = env === 'development';
+    const envVars = getEnvVariables();
 
     return {
         context: constants.projectDir,
@@ -209,7 +210,7 @@ module.exports = ({ minify } = {}) => {
             // Add support for environment variables under `process.env`
             // Also replace `typeof window` so that code branch elimination is performed by uglify at build time
             new DefinePlugin({
-                ...definePluginEnv(),
+                ...inlineEnvVariables(envVars, { includeProcessEnv: true }),
                 'typeof window': '"object"',
             }),
             // Enabling gives us better debugging output
