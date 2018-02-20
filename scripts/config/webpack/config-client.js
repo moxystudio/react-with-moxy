@@ -1,4 +1,4 @@
-/* eslint camelcase:0, global-require:0 */
+/* eslint-disable camelcase */
 
 const path = require('path');
 const sameOrigin = require('same-origin');

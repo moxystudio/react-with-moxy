@@ -1,3 +1,5 @@
+/* eslint-disable prefer-import/prefer-import-over-require */
+
 export default (loadComponent) => [
     {
         path: 'about',

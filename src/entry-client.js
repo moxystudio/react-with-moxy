@@ -47,7 +47,7 @@ match({ history, routes }, (error, redirectLocation, renderProps) => {
 if (process.env.NODE_ENV === 'development' && module.hot) {
     // Hot module reload for App and its routes
     module.hot.accept('./App', () => {
-        const buildRoutes = require('./App').buildRoutes;
+        const buildRoutes = require('./App').buildRoutes; // eslint-disable-line prefer-import/prefer-import-over-require
 
         routes = buildRoutes();
 

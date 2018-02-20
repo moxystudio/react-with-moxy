@@ -87,7 +87,7 @@
     "enzyme": "^3.2.0",
     "enzyme-adapter-react-16": "^1.1.0",
     "eslint": "^4.11.0",
-    "eslint-config-moxy": "^5.0.0",
+    "eslint-config-moxy": "^5.1.0",
     "eventsource-polyfill": "^0.9.6",
     "execa": "^0.9.0",
     "external-svg-sprite-loader": "^3.3.0",
