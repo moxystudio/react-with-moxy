@@ -2,6 +2,23 @@
 @import "mixins/typography";
 
 /* ==========================================================================
+   Fonts
+
+   If you are going to include custom fonts please use the /shared/media/fonts
+   directory.
+   ========================================================================== */
+
+/* @font-face {
+    font-family: "CustomFont";
+    font-weight: 800;
+    font-style: normal;
+    src:
+         url("shared/media/fonts/custom-font/CustomFont.woff2") format("woff2"),
+         url("shared/media/fonts/custom-font/CustomFont.woff") format("woff"),
+         url("shared/media/fonts/custom-font/CustomFont.eot") format("embedded-opentype"),
+ } */
+
+/* ==========================================================================
    Typography Defaults
    ========================================================================== */
 
