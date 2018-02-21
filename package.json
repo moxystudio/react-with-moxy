@@ -51,6 +51,7 @@
     ]
   },
   "dependencies": {
+    "axios": "^0.17.1",
     "babel-polyfill": "^6.23.0",
     "classnames": "^2.2.5",
     "compose-middleware": "^4.0.0",
@@ -68,8 +69,12 @@
     "react": "^16.1.0",
     "react-dom": "^16.1.0",
     "react-helmet": "^5.0.0",
+    "react-redux": "^5.0.6",
     "react-router": "^3.2.0",
     "react-router-scroll": "^0.4.1",
+    "redial": "^0.5.0",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
     "serialize-javascript": "^1.4.0",
     "svgxuse": "^1.2.1",
     "yargs": "^11.0.0"

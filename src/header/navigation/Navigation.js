@@ -17,6 +17,11 @@ class Navigation extends PureComponent {
                             About
                         </Link>
                     </li>
+                    <li className={ styles.listItem }>
+                        <Link to="/repositories" className={ styles.link } activeClassName={ styles.isActive }>
+                            Repositories
+                        </Link>
+                    </li>
                 </ul>
             </nav>
         );

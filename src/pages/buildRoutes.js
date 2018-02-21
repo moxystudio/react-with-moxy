@@ -1,6 +1,7 @@
 import nprogress from 'nprogress';
 import homeRoute from './home';
 import aboutRoutes from './about';
+import repositoriesRoutes from './repositories';
 import errorRoutes from './error';
 
 const isClient = typeof window !== 'undefined';
@@ -29,6 +30,7 @@ export default function buildRoutes() {
         indexRoute: homeRoute(),
         childRoutes: [
             ...aboutRoutes(loadComponent),
+            ...repositoriesRoutes(loadComponent),
             ...errorRoutes(loadComponent),
         ],
     };
