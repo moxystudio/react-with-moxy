@@ -108,7 +108,7 @@ async function runServer(data) {
     const app = express();
 
     // Configure express app
-    app.set('etag', false);  // Not necessary by default
+    app.set('etag', false); // Not necessary by default
 
     // Public files in /build are served without any cache
     // (this isn't necessary unless memoryFs is disabled in the `webpack-isomorphic-dev-middleware`)

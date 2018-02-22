@@ -81,8 +81,8 @@ async function runServer(data) {
     const app = express();
 
     // Configure express app
-    app.set('etag', false);  // Not necessary by default
-    app.set('x-powered-by', false);  // Remove x-powered-by header
+    app.set('etag', false); // Not necessary by default
+    app.set('x-powered-by', false); // Remove x-powered-by header
 
     // Enable gzip compression
     gzip && app.use('/', compression());
@@ -91,10 +91,10 @@ async function runServer(data) {
     // Therefore it's safe to cache them indefinitely
     app.use('/build', express.static(`${publicDir}/build`, {
         maxAge: 31557600000, // 1 year
-        immutable: true,     // No conditional requests
-        etag: false,         // Not necessary
-        index: false,        // Disable directory listing
-        fallthrough: false,  // Ensure that requests to /build do not propagate to other middleware
+        immutable: true, // No conditional requests
+        etag: false, // Not necessary
+        index: false, // Disable directory listing
+        fallthrough: false, // Ensure that requests to /build do not propagate to other middleware
     }));
 
     // The rest of the public files are served using a more modest approach using etags
