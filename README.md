@@ -1,3 +1,5 @@
+<img width="110" src="https://user-images.githubusercontent.com/9271177/36511315-150065a8-175e-11e8-8f7a-27d3f72aa52b.png" />
+
 # react-with-moxy
 
 [![Build Status][travis-image]][travis-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url] [![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
