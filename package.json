@@ -99,7 +99,7 @@
     "jest": "^22.1.4",
     "jest-enzyme": "^4.0.1",
     "jest-file": "^1.0.0",
-    "lint-staged": "^6.1.0",
+    "lint-staged": "^7.0.0",
     "postcss-loader": "^2.0.8",
     "postcss-preset-moxy": "^1.0.0",
     "preprocess-loader": "^0.2.0",
