@@ -32,7 +32,7 @@ function renderError() {
             return next(err);
         }
 
-        const { exports, buildManifest } = res.locals.isomorphic;
+        const { exports, buildManifest } = res.locals.isomorphic || {};
 
         // Skip if there's no defined `renderError`
         if (!exports || !exports.renderError) {
