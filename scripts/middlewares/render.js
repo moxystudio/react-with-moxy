@@ -18,6 +18,9 @@ function render() {
         (req, res, next) => {
             const { exports, buildManifest } = res.locals.isomorphic;
 
+            // Necessary for gzip to work on streamed responses
+            res.set('Content-Type', 'text/html');
+
             Promise.resolve(exports.render({ req, res, buildManifest }))
             .catch(next);
         },
