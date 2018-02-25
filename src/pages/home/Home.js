@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
+import Hero from 'shared/components/hero/Hero';
 import styles from './Home.css';
 
 class Home extends PureComponent {
     render() {
         return (
             <main className={ styles.homePage }>
-                <div className={ styles.hero } />
+                <Hero />
                 <div className={ styles.container }>
                     <h1>Heading 1</h1>
                     <p>

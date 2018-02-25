@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import Helmet from 'react-helmet';
+import Hero from 'shared/components/hero/Hero';
 import Svg from 'shared/components/svg/Svg';
 import cakeSvg from 'shared/media/images/icons/cake.svg';
 import thumbsUpSvg from 'shared/media/images/icons/thumbs-up.svg';
@@ -13,7 +14,7 @@ class About extends PureComponent {
             <main className={ styles.aboutPage }>
                 <Helmet title="About" />
 
-                <div className={ styles.hero } />
+                <Hero small />
                 <div className={ styles.container }>
                     <h1>About</h1>
                     <p>This is the about page!</p>
