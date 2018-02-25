@@ -113,7 +113,7 @@
     "standard-version": "^4.2.0",
     "style-loader": "^0.20.0",
     "stylelint": "^9.0.0",
-    "stylelint-config-moxy": "^4.0.0",
+    "stylelint-config-moxy": "^5.0.0",
     "svg-css-modules-loader": "^1.3.0",
     "svgo": "^1.0.3",
     "svgo-loader": "^2.0.0",
