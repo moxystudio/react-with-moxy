@@ -5,25 +5,3 @@
    ========================================================================== */
 
 @mixin layout-main .internal-error-page, .container;
-
-/* ==========================================================================
-   Hero
-   ========================================================================== */
-
-.hero {
-    position: relative;
-    height: 300px;
-    min-height: 150px;
-    max-height: 20vh;
-    overflow: hidden;
-}
-
-.hero::before {
-    content: "";
-    position: absolute;
-    width: calc(100% + 300px);
-    height: 100%;
-    display: block;
-    background: url("shared/media/images/backgrounds/moxy-crowd.jpg") -300px center no-repeat;
-    background-size: cover;
-}
