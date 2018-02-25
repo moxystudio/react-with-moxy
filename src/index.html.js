@@ -1,6 +1,7 @@
+import serialize from 'serialize-javascript';
 import config from 'shared/config';
 
-export default function renderDocument({ helmet, rootHtml, buildManifest }) {
+export default function renderDocument({ helmet, rootHtml, buildManifest, isomorphicState }) {
     const { assets } = buildManifest;
 
     return `
@@ -26,6 +27,11 @@ export default function renderDocument({ helmet, rootHtml, buildManifest }) {
             <body>
                 <!-- Root element where app goes -->
                 <div id="root">${rootHtml}</div>
+
+                ${isomorphicState ? `
+                <!-- Isomorphic state -->
+                <script>window.__ISOMORPHIC_STATE__ = ${serialize(isomorphicState, { isJSON: true })};</script>
+                ` : ''}
 
                 <!-- Load JS assets -->
                 ${assets.js.map((asset) => `<script src="${asset.url}"></script>`).join('\n')}

@@ -7,6 +7,14 @@ import nprogress from 'nprogress';
 import { AppContainer } from 'react-hot-loader';
 import { buildRoutes } from './App';
 
+const isDev = process.env.NODE_ENV === 'development';
+const { internalServerError } = window.__ISOMORPHIC_STATE__ || {};
+// Set location to /internal-error if we had an internal server error
+const location = internalServerError ? '/internal-error' : undefined;
+
+// Allow the isomorphic state to be garbage-collected on non-dev environments
+!isDev && delete window.__ISOMORPHIC_STATE__;
+
 // Track page views for this SPA in Google Analytics
 history.listen((location) => {
     if (window.ga) {
@@ -23,7 +31,7 @@ let routes = buildRoutes();
 
 // Render our app!
 // Need to use match() because of async routes, see https://github.com/ReactTraining/react-router/blob/master/docs/guides/ServerRendering.md#async-routes
-match({ history, routes }, (error, redirectLocation, renderProps) => {
+match({ history, routes, location }, (error, redirectLocation, renderProps) => {
     hydrate(
         <AppContainer>
             <Router
