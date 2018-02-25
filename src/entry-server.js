@@ -13,8 +13,8 @@ const matchAsync = pify(match, { multiArgs: true });
 const routes = buildRoutes();
 
 export async function render({ req, res, buildManifest }) {
-    // Match req against our routes
     const history = createMemoryHistory();
+    // Match req against our routes
     const [redirectLocation, renderProps] = await matchAsync({ history, routes, location: req.url });
 
     // Is it to redirect?
@@ -72,6 +72,7 @@ export async function renderError({ err, req, res, buildManifest }) {
         helmet: Helmet.renderStatic(),
         rootHtml,
         buildManifest,
+        isomorphicState: { internalServerError: true },
     });
 
     // Send HTML
