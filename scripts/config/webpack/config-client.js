@@ -45,6 +45,8 @@ module.exports = ({ minify } = {}) => {
             publicPath: `${publicUrl}/build/`,
             filename: isDev ? 'js/[name].js' : 'js/[name].[chunkhash].js',
             chunkFilename: isDev ? 'js/chunk.[name].js' : 'js/chunk.[name].[chunkhash].js',
+            hotUpdateChunkFilename: '[id].hot-update.js',
+            hotUpdateMainFilename: 'hot-update.json',
         },
         resolve: {
             alias: {
