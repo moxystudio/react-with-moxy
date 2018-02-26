@@ -217,8 +217,8 @@ module.exports = ({ minify } = {}) => {
             }),
             // Enabling gives us better debugging output
             new NamedModulesPlugin(),
-            // Enable scope hoisting which reduces bundle size
-            new ModuleConcatenationPlugin(),
+            // Enable scope hoisting which reduces bundle size, disable in development to increase (re)build performance
+            !isDev && new ModuleConcatenationPlugin(),
             // Ensures that hot reloading works
             isDev && new HotModuleReplacementPlugin(),
             // Alleviate cases where developers working on OSX, which does not follow strict path case sensitivity
