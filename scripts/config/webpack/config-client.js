@@ -245,6 +245,6 @@ module.exports = ({ minify } = {}) => {
                 },
             }),
         ].filter((val) => val),
-        devtool: isDev ? 'eval-source-map' : 'source-map',
+        devtool: isDev ? 'cheap-module-source-map' : 'source-map',
     };
 };
