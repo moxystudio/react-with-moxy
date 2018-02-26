@@ -53,6 +53,7 @@ We aim to remove all the tooling to [react-scripts](https://github.com/moxystudi
     - [Customizing the server](#customizing-the-server)
     - [Customizing Webpack](#customizing-webpack)
     - [Customizing Jest](#customizing-jest)
+- [Examples](#examples)
 - [FAQ](#faq)
 
 
@@ -205,6 +206,16 @@ The `build-manifest.json` file contains a summary of the build, including the pr
     └── util
         └── manifest.js
 ```
+
+
+## Examples
+
+<details>
+    <summary><b>Integration with:</b></summary>
+    <ul>
+        <li><a href="https://github.com/moxystudio/react-with-moxy/tree/examples/with-redux">Redux</a></li>
+    </ul>
+</details>
 
 
 ## FAQ
