@@ -3,17 +3,19 @@ import homeRoute from './home';
 import aboutRoutes from './about';
 import errorRoutes from './error';
 
+const isClient = typeof window !== 'undefined';
+
 async function loadComponent(promise) {
     let Component;
 
     // Start growing the loading bar
-    typeof window !== 'undefined' && nprogress.start();
+    isClient && nprogress.start();
 
     try {
         Component = await promise;
     } finally {
         // We are done loading!
-        typeof window !== 'undefined' && nprogress.done();
+        isClient && nprogress.done();
     }
 
     return Component.default;

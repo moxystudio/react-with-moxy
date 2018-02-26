@@ -43,7 +43,7 @@ match({ history, routes, location }, (error, redirectLocation, renderProps) => {
         document.getElementById('root'),
         () => {
             // Remove server-side rendered CSS when developing, otherwise CSS styles would be duplicated
-            if (process.env.NODE_ENV === 'development') {
+            if (isDev) {
                 setTimeout(() =>
                     Array.from(document.querySelectorAll('link[rel="stylesheet"][data-ssr]'))
                     .forEach((el) => el.remove()), 100);
@@ -52,7 +52,7 @@ match({ history, routes, location }, (error, redirectLocation, renderProps) => {
     );
 });
 
-if (process.env.NODE_ENV === 'development' && module.hot) {
+if (isDev && module.hot) {
     // Hot module reload for App and its routes
     module.hot.accept('./App', () => {
         const buildRoutes = require('./App').buildRoutes; // eslint-disable-line prefer-import/prefer-import-over-require
