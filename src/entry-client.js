@@ -9,8 +9,6 @@ import { buildRoutes } from './App';
 
 const isDev = process.env.NODE_ENV === 'development';
 const { internalServerError } = window.__ISOMORPHIC_STATE__ || {};
-// Set location to /internal-error if we had an internal server error
-const location = internalServerError ? '/internal-error' : undefined;
 
 // Allow the isomorphic state to be garbage-collected on non-dev environments
 !isDev && delete window.__ISOMORPHIC_STATE__;
@@ -27,7 +25,9 @@ history.listen((location) => {
 nprogress.configure({ minimum: 0.15, showSpinner: false, speed: 500 });
 
 // Build our routes
-let routes = buildRoutes();
+const routes = buildRoutes();
+// Set location to /internal-error if we had an internal server error
+const location = internalServerError ? '/internal-error' : undefined;
 
 // Render our app!
 // Need to use match() because of async routes, see https://github.com/ReactTraining/react-router/blob/master/docs/guides/ServerRendering.md#async-routes
@@ -56,8 +56,7 @@ if (process.env.NODE_ENV === 'development' && module.hot) {
     // Hot module reload for App and its routes
     module.hot.accept('./App', () => {
         const buildRoutes = require('./App').buildRoutes; // eslint-disable-line prefer-import/prefer-import-over-require
-
-        routes = buildRoutes();
+        const routes = buildRoutes();
 
         hydrate(
             <AppContainer>

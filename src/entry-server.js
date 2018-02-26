@@ -39,6 +39,7 @@ export async function render({ req, res, buildManifest }) {
         helmet: Helmet.renderStatic(),
         rootHtml,
         buildManifest,
+        isomorphicState: {},
     });
 
     // Send HTML
