@@ -70,7 +70,7 @@ module.exports = ({ minify } = {}) => {
                                 cacheDirectory: true,
                                 presets: [
                                     [require.resolve('babel-preset-moxy'), {
-                                        targets: ['browser'],
+                                        targets: ['browsers'],
                                         react: true,
                                         modules: false,
                                         regenerator: false,
