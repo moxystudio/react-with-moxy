@@ -68,6 +68,7 @@ module.exports = ({ minify } = {}) => {
                                         targets: ['node'],
                                         react: true,
                                         namedDefaultExport: false,
+                                        regenerator: false,
                                     }],
                                 ],
                                 plugins: [
