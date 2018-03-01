@@ -55,6 +55,7 @@ We aim to remove all the tooling to [react-scripts](https://github.com/moxystudi
     - [Customizing Jest](#customizing-jest)
 - [Examples](#examples)
 - [FAQ](#faq)
+- [Used in](#used-in)
 
 
 ## Installation and setup
@@ -239,3 +240,8 @@ To disable `gzip`, you may start the production server with:
 ```sh
 npm start -- --no-gzip
 ```
+
+
+## Used in
+
+- [Hellywood](https://hellywood.com/)
