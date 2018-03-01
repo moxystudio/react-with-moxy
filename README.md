@@ -245,3 +245,4 @@ npm start -- --no-gzip
 ## Used in
 
 - [Hellywood](https://hellywood.com/)
+- [Platforme](https://platforme.com/)
