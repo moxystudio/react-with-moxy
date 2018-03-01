@@ -22,12 +22,6 @@
    Typography Defaults
    ========================================================================== */
 
-html,
-body {
-    /* Put background color also in html because of macOS/iOS elastic scroll */
-    background-color: var(--color-alabaster);
-}
-
 body {
     color: var(--color-violet);
     font-family: var(--typography-text-font);
