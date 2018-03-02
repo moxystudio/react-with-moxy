@@ -10,6 +10,7 @@ const { getEnvVariables, inlineEnvVariables } = require('./util/env');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
 const NamedModulesPlugin = require('webpack/lib/NamedModulesPlugin');
+const HashedModuleIdsPlugin = require('webpack/lib/HashedModuleIdsPlugin');
 const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 const NoEmitOnErrorsPlugin = require('webpack/lib/NoEmitOnErrorsPlugin');
 const DefinePlugin = require('webpack/lib/DefinePlugin');
@@ -211,7 +212,9 @@ module.exports = ({ minify } = {}) => {
                 'typeof window': '"undefined"',
             }),
             // Add module names to factory functions so they appear in browser profiler
-            new NamedModulesPlugin(),
+            isDev && new NamedModulesPlugin(),
+            // In production, ofuscate paths to modules
+            !isDev && new HashedModuleIdsPlugin(),
             // Enable scope hoisting which reduces bundle size
             new ModuleConcatenationPlugin(),
             // Alleviate cases where developers working on OSX, which does not follow strict path case sensitivity

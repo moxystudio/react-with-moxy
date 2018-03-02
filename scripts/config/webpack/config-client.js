@@ -8,6 +8,7 @@ const { getEnvVariables, inlineEnvVariables } = require('./util/env');
 // Webpack plugins
 const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
 const NamedModulesPlugin = require('webpack/lib/NamedModulesPlugin');
+const HashedModuleIdsPlugin = require('webpack/lib/HashedModuleIdsPlugin');
 const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 const HotModuleReplacementPlugin = require('webpack/lib/HotModuleReplacementPlugin');
 const NoEmitOnErrorsPlugin = require('webpack/lib/NoEmitOnErrorsPlugin');
@@ -216,8 +217,10 @@ module.exports = ({ minify } = {}) => {
                 ...inlineEnvVariables(envVars, { includeProcessEnv: true }),
                 'typeof window': '"object"',
             }),
-            // Enabling gives us better debugging output
-            new NamedModulesPlugin(),
+            // Enabling gives us better debugging output for development
+            isDev && new NamedModulesPlugin(),
+            // In production, ofuscate paths to modules
+            !isDev && new HashedModuleIdsPlugin(),
             // Enable scope hoisting which reduces bundle size, disable in development to increase (re)build performance
             !isDev && new ModuleConcatenationPlugin(),
             // Ensures that hot reloading works
