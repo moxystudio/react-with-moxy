@@ -33,8 +33,7 @@ module.exports = ({ minify } = {}) => {
                 require.resolve('dom4'), // Adds dom4 polyfills, such as Element.remove(), etc
                 isDev && require.resolve('eventsource-polyfill'), // Necessary to make hmr work on IE
                 isDev && require.resolve('core-js/modules/es6.symbol'), // Necessary to get around an issue with `react-hot-loader` requiring react, see: https://github.com/facebook/react/issues/8379#issuecomment-309916013
-                isDev && require.resolve('react-hot-loader/patch'), // For hot module reload
-                isDev && `${require.resolve('webpack-hot-middleware/client')}?reload=true`, // For hot module reload
+                isDev && require.resolve('webpack-hot-middleware/client'), // For hot module reload
                 require.resolve('svgxuse'), // Necessary because external svgs need a polyfill in IE
                 constants.entryClientFile,
             ]
