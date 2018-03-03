@@ -73,7 +73,6 @@ module.exports = ({ minify } = {}) => {
                                         targets: ['browsers'],
                                         react: true,
                                         modules: false,
-                                        regenerator: false,
                                     }],
                                 ],
                                 plugins: [
