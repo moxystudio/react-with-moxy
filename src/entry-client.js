@@ -4,7 +4,7 @@ import { hydrate } from 'react-dom';
 import { match, Router, browserHistory as history, applyRouterMiddleware } from 'react-router';
 import { useScroll } from 'react-router-scroll';
 import nprogress from 'nprogress';
-import { AppContainer } from 'react-hot-loader';
+import { hot } from 'react-hot-loader';
 import { buildRoutes } from './App';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -28,18 +28,17 @@ nprogress.configure({ minimum: 0.15, showSpinner: false, speed: 500 });
 const routes = buildRoutes();
 // Set location to /internal-error if we had an internal server error
 const location = internalServerError ? '/internal-error' : undefined;
+const HotRouter = hot(module)(Router);
 
 // Render our app!
 // Need to use match() because of async routes, see https://github.com/ReactTraining/react-router/blob/master/docs/guides/ServerRendering.md#async-routes
 match({ history, routes, location }, (error, redirectLocation, renderProps) => {
     hydrate(
-        <AppContainer>
-            <Router
-                { ...renderProps }
-                history={ history }
-                routes={ routes }
-                render={ applyRouterMiddleware(useScroll()) } />
-        </AppContainer>,
+        <HotRouter
+            { ...renderProps }
+            history={ history }
+            routes={ routes }
+            render={ applyRouterMiddleware(useScroll()) } />,
         document.getElementById('root'),
         () => {
             // Remove server-side rendered CSS when developing, otherwise CSS styles would be duplicated
@@ -55,16 +54,13 @@ match({ history, routes, location }, (error, redirectLocation, renderProps) => {
 if (isDev && module.hot) {
     // Hot module reload for App and its routes
     module.hot.accept('./App', () => {
-        const buildRoutes = require('./App').buildRoutes; // eslint-disable-line prefer-import/prefer-import-over-require
         const routes = buildRoutes();
 
         hydrate(
-            <AppContainer>
-                <Router
-                    history={ history }
-                    routes={ routes }
-                    render={ applyRouterMiddleware(useScroll()) } />
-            </AppContainer>,
+            <HotRouter
+                history={ history }
+                routes={ routes }
+                render={ applyRouterMiddleware(useScroll()) } />,
             document.getElementById('root'),
         );
     });
