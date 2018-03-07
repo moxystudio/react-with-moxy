@@ -17,6 +17,8 @@ const ModuleConcatenationPlugin = require('webpack/lib/optimize/ModuleConcatenat
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const brotliCompress = require('iltorb').compress;
 
 module.exports = ({ minify } = {}) => {
     const {
@@ -230,6 +232,20 @@ module.exports = ({ minify } = {}) => {
                 filename: 'css/main.[contenthash:15].css',
                 allChunks: true,
                 disable: isDev,
+            }),
+            // Compressed versions of the assets are produced along with the original files
+            // Both gz and br versions of the assets are created
+            minify && new CompressionPlugin(),
+            minify && new CompressionPlugin({
+                asset: '[path].br',
+                algorithm: (buf, options, callback) => {
+                    brotliCompress(buf, {
+                        mode: 0,
+                        quality: 11,
+                        lgwin: 22,
+                        lgblock: 0,
+                    }, callback);
+                },
             }),
             // External svg sprite plugin
             new SvgStorePlugin(),

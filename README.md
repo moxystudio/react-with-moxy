@@ -233,14 +233,13 @@ import someSvg from './some.inline.svg';
 
 **Should Node.js be responsible for compressing assets with gzip?**
 
-If possible, you should do compression in an upstream server like **nginx**. Doing the compression in **Node.js** might hold the event loop which it not desirable for performance reasons.
+Doing the compression in **Node.js** might hold the event loop which is not desirable for performance reasons. That's why we employ `gzip` and `br` compression at build time. We use [compression-webpack-plugin](https://github.com/webpack-contrib/compression-webpack-plugin) to compress the assets when the project is built and the production server will attempt to serve the compressed files based on the requests' [Accept-Encoding](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding) header.
 
-To disable `gzip`, you may start the production server with:
+Nevertheless, if you want to do compression in an upstream server, like **nginx**, you may disable serving the compressed files by starting the server with:
 
 ```sh
 npm start -- --no-gzip
 ```
-
 
 ## Used in
 

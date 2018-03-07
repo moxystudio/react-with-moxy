@@ -8,10 +8,10 @@ const planify = require('planify');
 const pify = require('pify');
 const internalIp = require('internal-ip');
 const express = require('express');
-const compression = require('compression');
 const { render, renderError } = require('./middlewares/render');
 const { read: readBuildManifest } = require('./util/manifest');
 const { publicDir } = require('./util/constants');
+const gzipStatic = require('connect-gzip-static');
 
 // ---------------------------------------------------------
 // CLI definition
@@ -84,12 +84,13 @@ async function runServer(data) {
     app.set('etag', false); // Not necessary by default
     app.set('x-powered-by', false); // Remove x-powered-by header
 
-    // Enable gzip compression
-    gzip && app.use('/', compression());
+    // If the gzip flag is on the compressed files are served
+    // If not, the regular files are served
+    const staticServe = gzip ? gzipStatic : express.static;
 
     // Public files in /build have the following pattern: <file>.<hash>.<extension>
     // Therefore it's safe to cache them indefinitely
-    app.use('/build', express.static(`${publicDir}/build`, {
+    app.use('/build', staticServe(`${publicDir}/build`, {
         maxAge: 31557600000, // 1 year
         immutable: true, // No conditional requests
         etag: false, // Not necessary
