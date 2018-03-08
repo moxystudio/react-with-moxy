@@ -11,7 +11,7 @@ const express = require('express');
 const { render, renderError } = require('./middlewares/render');
 const { read: readBuildManifest } = require('./util/manifest');
 const { publicDir } = require('./util/constants');
-const gzipStatic = require('connect-gzip-static');
+const gzipStatic = require('express-static-gzip');
 
 // ---------------------------------------------------------
 // CLI definition
@@ -96,6 +96,7 @@ async function runServer(data) {
         etag: false, // Not necessary
         index: false, // Disable directory listing
         fallthrough: false, // Ensure that requests to /build do not propagate to other middleware
+        enableBrotli: true, // Add suport for brotli compressed files
     }));
 
     // The rest of the public files are served using a more modest approach using etags
