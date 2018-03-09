@@ -6,14 +6,9 @@ const constants = require('../../util/constants');
 const { getEnvVariables, inlineEnvVariables } = require('./util/env');
 
 // Webpack plugins
-const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
-const NamedModulesPlugin = require('webpack/lib/NamedModulesPlugin');
-const HashedModuleIdsPlugin = require('webpack/lib/HashedModuleIdsPlugin');
-const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 const HotModuleReplacementPlugin = require('webpack/lib/HotModuleReplacementPlugin');
-const NoEmitOnErrorsPlugin = require('webpack/lib/NoEmitOnErrorsPlugin');
+const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
 const DefinePlugin = require('webpack/lib/DefinePlugin');
-const ModuleConcatenationPlugin = require('webpack/lib/optimize/ModuleConcatenationPlugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
@@ -31,6 +26,7 @@ module.exports = ({ minify } = {}) => {
 
     return {
         context: constants.projectDir,
+        mode: isDev ? 'development' : 'production',
         entry: {
             main: [
                 require.resolve('dom4'), // Adds dom4 polyfills, such as Element.remove(), etc
@@ -204,25 +200,12 @@ module.exports = ({ minify } = {}) => {
             ],
         },
         plugins: [
-            // Ensures that files with NO errors are produced
-            new NoEmitOnErrorsPlugin(),
-            // Configure debug & minimize
-            new LoaderOptionsPlugin({
-                minimize: minify,
-                debug: isDev,
-            }),
             // Add support for environment variables under `process.env`
             // Also replace `typeof window` so that code branch elimination is performed by uglify at build time
             new DefinePlugin({
                 ...inlineEnvVariables(envVars, { includeProcessEnv: true }),
                 'typeof window': '"object"',
             }),
-            // Enabling gives us better debugging output for development
-            isDev && new NamedModulesPlugin(),
-            // In production, ofuscate paths to modules
-            !isDev && new HashedModuleIdsPlugin(),
-            // Enable scope hoisting which reduces bundle size, disable in development to increase (re)build performance
-            !isDev && new ModuleConcatenationPlugin(),
             // Ensures that hot reloading works
             isDev && new HotModuleReplacementPlugin(),
             // Alleviate cases where developers working on OSX, which does not follow strict path case sensitivity
@@ -249,22 +232,30 @@ module.exports = ({ minify } = {}) => {
             }),
             // External svg sprite plugin
             new SvgStorePlugin(),
-            // Minify JS
-            minify && new UglifyJsPlugin({
-                sourceMap: true,
-                extractComments: true,
-                parallel: true,
-                cache: true,
-                uglifyOptions: {
-                    mangle: true,
-                    compress: {
-                        warnings: false, // Mute warnings
-                        drop_console: true, // Drop console.* statements
-                        drop_debugger: true, // Drop debugger statements
-                    },
-                },
-            }),
         ].filter((val) => val),
-        devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
+        devtool: isDev ? 'cheap-module-eval-source-map' : 'nosources-source-map',
+        optimization: {
+            minimize: minify,
+            minimizer: [
+                new UglifyJsPlugin({
+                    sourceMap: true,
+                    extractComments: true,
+                    parallel: true,
+                    cache: true,
+                    uglifyOptions: {
+                        mangle: true,
+                        compress: {
+                            warnings: false, // Mute warnings
+                            drop_console: true, // Drop console.* statements
+                            drop_debugger: true, // Drop debugger statements
+                        },
+                    },
+                }),
+            ],
+        },
+        performance: {
+            maxEntrypointSize: 600000,
+            maxAssetSize: 600000,
+        },
     };
 };
