@@ -8,6 +8,7 @@ const { getEnvVariables, inlineEnvVariables } = require('./util/env');
 
 // Webpack plugins
 const DefinePlugin = require('webpack/lib/DefinePlugin');
+const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -47,6 +48,9 @@ module.exports = ({ minify } = {}) => {
         resolve: {
             alias: {
                 shared: path.join(constants.srcDir, 'shared'),
+                // Ensure that any dependency using `babel-runtime/regenerator` maps to `regenerator-runtime`
+                // This guarantees that there is no `regenerator-runtime` duplication in the build in case the versions differ
+                'babel-runtime/regenerator': require.resolve('regenerator-runtime'),
             },
         },
         module: {
@@ -193,6 +197,13 @@ module.exports = ({ minify } = {}) => {
             ],
         },
         plugins: [
+            // If the targets specified in `babel-preset-env` already support `async await` natively, such as Nodejs >= v8,
+            // the `regenerator-runtime` won't be installed automatically
+            // This is fine, except if your app uses dependencies that rely on the `regeneratorRuntime` global
+            // We use `ProvidePlugin` to provide `regeneratorRuntime` to those dependencies
+            new ProvidePlugin({
+                regeneratorRuntime: require.resolve('regenerator-runtime'),
+            }),
             // Add support for environment variables under `process.env`
             // Also replace `typeof window` so that code branch elimination is performed by uglify at build time
             new DefinePlugin({
