@@ -91,7 +91,7 @@
     "eslint": "^4.18.1",
     "eslint-config-moxy": "^5.1.0",
     "eventsource-polyfill": "^0.9.6",
-    "execa": "^0.9.0",
+    "execa": "^0.10.0",
     "external-svg-sprite-loader": "^4.0.0-beta.1",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
