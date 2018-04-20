@@ -42,8 +42,8 @@ module.exports = ({ minify } = {}) => {
         output: {
             path: path.join(constants.publicDir, 'build'),
             publicPath: `${publicUrl}/build/`,
-            filename: isDev ? 'js/[name].js' : 'js/[name].[chunkhash].js',
-            chunkFilename: isDev ? 'js/chunk.[name].js' : 'js/chunk.[name].[chunkhash].js',
+            filename: isDev ? 'js/[name].js' : 'js/[name].[chunkhash:15].js',
+            chunkFilename: isDev ? 'js/chunk.[name].js' : 'js/chunk.[name].[chunkhash:15].js',
             hotUpdateChunkFilename: '[id].hot-update.js',
             hotUpdateMainFilename: 'hot-update.json',
         },
@@ -223,7 +223,7 @@ module.exports = ({ minify } = {}) => {
             new CaseSensitivePathsPlugin(),
             // At the moment we only generic a single app CSS file which is kind of bad, see: https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/332
             new ExtractTextPlugin({
-                filename: 'css/main.[contenthash:15].css',
+                filename: 'css/main.[md5:contenthash:hex:15].css',
                 allChunks: true,
                 disable: isDev,
             }),
