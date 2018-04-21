@@ -1,10 +1,8 @@
-const fs = require('fs');
 const path = require('path');
 const sortChunks = require('webpack-sort-chunks').default;
 const escapeRegExp = require('lodash/escapeRegExp');
 const castArray = require('lodash/castArray');
 const merge = require('deepmerge');
-const { publicDir } = require('./constants');
 
 function parseWebpackStats(stats) {
     const { hash, publicPath } = stats;
@@ -48,9 +46,7 @@ function removeServerBundle(manifest, stats) {
     return asset;
 }
 
-// ---------------------------------------------------
-
-function build({ clientStats, serverStats }) {
+function createBuildManifest({ clientStats, serverStats }) {
     // Convert stats to objects
     clientStats = clientStats.toJson();
     serverStats = serverStats.toJson();
@@ -77,37 +73,4 @@ function build({ clientStats, serverStats }) {
     return manifest;
 }
 
-function write(stats) {
-    const manifest = build(stats);
-    const manifestFile = path.join(publicDir, 'build/build-manifest.json');
-
-    try {
-        fs.writeFileSync(manifestFile, JSON.stringify(manifest, null, 4));
-    } catch (err) {
-        err.detail = `Could not write manifest file on ${path.relative('', manifestFile)}`;
-        err.detail += err.code === 'ENOENT' ? `\nDid you forgot to create ${path.relative('', `${publicDir}/build`)}?` : '';
-
-        throw err;
-    }
-
-    return manifest;
-}
-
-function read() {
-    const manifestFile = path.join(publicDir, 'build/build-manifest.json');
-
-    try {
-        return JSON.parse(fs.readFileSync(manifestFile));
-    } catch (err) {
-        err.detail = `Could not read manifest file on ${path.relative('', manifestFile)}`;
-        err.detail += err.code === 'ENOENT' ? '\nDid you forgot to build the project?' : '';
-
-        throw err;
-    }
-}
-
-module.exports = {
-    build,
-    write,
-    read,
-};
+module.exports = createBuildManifest;

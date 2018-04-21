@@ -9,7 +9,7 @@ const rimraf = require('rimraf');
 const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
 const webpackIsomorphicCompilerReporter = require('webpack-isomorphic-compiler-reporter');
 const { getConfig: getWebpackConfig } = require('./config/webpack');
-const { write: writeBuildManifest } = require('./util/manifest');
+const writeBuildManifest = require('./build-manifest/write');
 const { publicDir } = require('./util/constants');
 
 // ---------------------------------------------------------

@@ -16,7 +16,7 @@ const webpackIsomorphicDevMiddleware = require('webpack-isomorphic-dev-middlewar
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const { render, renderError } = require('./middlewares/render');
 const { getConfig: getWebpackConfig } = require('./config/webpack');
-const { build: buildManifest } = require('./util/manifest');
+const createBuildManifest = require('./build-manifest/create');
 const { publicDir } = require('./util/constants');
 
 // ---------------------------------------------------------
@@ -138,7 +138,7 @@ async function runServer(data) {
         (req, res, next) => {
             const { isomorphic } = res.locals;
 
-            isomorphic.buildManifest = isomorphic.buildManifest || buildManifest(isomorphic.compilation);
+            isomorphic.buildManifest = isomorphic.buildManifest || createBuildManifest(isomorphic.compilation);
             next();
         },
         // Setup the render middlewares that will call render() & renderError()

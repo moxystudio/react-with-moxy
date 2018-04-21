@@ -9,7 +9,7 @@ const pify = require('pify');
 const internalIp = require('internal-ip');
 const express = require('express');
 const { render, renderError } = require('./middlewares/render');
-const { read: readBuildManifest } = require('./util/manifest');
+const readBuildManifest = require('./build-manifest/read');
 const { publicDir } = require('./util/constants');
 const gzipStatic = require('express-static-gzip');
 
