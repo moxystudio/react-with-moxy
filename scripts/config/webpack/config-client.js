@@ -2,6 +2,7 @@
 
 const path = require('path');
 const sameOrigin = require('same-origin');
+const mimeDb = require('mime-db');
 const constants = require('../../util/constants');
 const { getEnvVariables, inlineEnvVariables } = require('./util/env');
 
@@ -15,6 +16,14 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const brotliCompress = require('iltorb').compress;
+
+const compressibleRegExps = Object.values(mimeDb)
+.filter((mime) => mime.compressible && mime.extensions)
+.reduce((extensions, mime) => {
+    mime.extensions.forEach((ext) => extensions.push(new RegExp(`\\.${ext}`)));
+
+    return extensions;
+}, []);
 
 module.exports = ({ minify } = {}) => {
     const {
@@ -229,8 +238,13 @@ module.exports = ({ minify } = {}) => {
             }),
             // Compressed versions of the assets are produced along with the original files
             // Both gz and br versions of the assets are created
-            minify && new CompressionPlugin(),
             minify && new CompressionPlugin({
+                include: compressibleRegExps,
+                exclude: /\.(map|LICENSE)$/,
+            }),
+            minify && new CompressionPlugin({
+                include: compressibleRegExps,
+                exclude: /\.(map|LICENSE)$/,
                 asset: '[path].br',
                 algorithm: (buf, options, callback) => {
                     brotliCompress(buf, {
