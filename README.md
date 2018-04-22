@@ -23,19 +23,23 @@ Isomorphic JavaScript applications can be pretty challenging and hard to setup.
 
 `react-with-moxy` offers you the required tooling for your universal JavaScript application, as well as an opinionated frontend stack ready to kick-off your next project.
 
-We aim to remove all the tooling to [react-scripts](https://github.com/moxystudio/react-with-moxy-scripts), which will abstract all the complexity behind setting up webpack, server-side rendering and other complex tasks.
+In the near future, we will be moving all the built-in tooling under `scripts/` to a separate package. This will make it easier for projects based on this boilerplate to receive updates.
 
 
-## What’s Included?
+## What's Included?
 
 - [React](https://reactjs.org/)
 - [React Router](https://github.com/ReactTraining/react-router)
     - we use v3 because v4 have some conceptual [problems](https://github.com/ReactTraining/react-router/issues/5076#issuecomment-326456921) that we are trying to avoid
-- [PostCSS](http://postcss.org/) with [cssnext](http://cssnext.io/) plugin
+- [Babel](https://babeljs.io) with [babel-preset-moxy](https://github.com/moxystudio/babel-preset-moxy)
+- [PostCSS](http://postcss.org/) with [postcss-preset-moxy](https://github.com/moxystudio/postcss-preset-moxy)
 - [Webpack](https://webpack.js.org/)
+- [ESLint](https://eslint.org/) with [eslint-config-moxy](https://github.com/moxystudio/eslint-config-moxy)
+- [Stylelint](https://stylelint.io/) with [stylelint-config-moxy](https://github.com/moxystudio/stylelint-config-moxy)
 - [Express](https://expressjs.com/)
 - [Node](https://nodejs.org)
 - [Jest](https://facebook.github.io/jest/) and [Enzyme](https://github.com/airbnb/enzyme)
+- Dockerfile
 
 
 ## Table of Contents
@@ -146,7 +150,8 @@ Besides the variables listed above, your server bundle will have access to the w
 
 ### Client bundle
 
-Only the variables listed above will be available.   
+Only the variables listed above will be available.
+
 If you need custom environment variables, you must prefix them with `REACT_APP_`. This avoids accidentally exposing sensitive environment variables, such as a private key or a database credential.
 
 ### .env file
@@ -155,10 +160,24 @@ Environment variables defined on `.env` file will be loaded into `process.env`.
 Please read [**dotenv**](https://github.com/motdotla/dotenv) documentation for more information.
 
 ```
-REACT_APP_FOO=bar
+REACT_APP_FOO=foo
+REACT_APP_BAR=bar
 ```
 
 This file is ignored in source control and it is intended to be created from `.env.sample`, which is commited and anyone who clones the project can easily use it as a starting point.
+
+### Passing environment variables when building a docker image
+
+The project includes a `Dockerfile`, allowing you to generate a docker image of your project. Here's an example of how to build the docker image and pass a few environment variables:
+
+```sh
+$ docker build .
+  --tag my-project:latest \
+  --build-arg $SITE_URL=http://my-site.com \
+  --build-arg $PUBLIC_URL=http://cdn.my-site.com
+```
+
+The environment variables are mapped to [build args](https://docs.docker.com/engine/reference/builder/#arg) in the `Dockerfile`. This means that you **must update** the `Dockerfile` anytime you add new environment variables.
 
 
 ## Customization
