@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const sortChunks = require('webpack-sort-chunks').default;
 const escapeRegExp = require('lodash/escapeRegExp');

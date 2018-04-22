@@ -1,3 +1,7 @@
+/* global document:false */
+
+'use strict';
+
 // Add request animation frame which is required by react
 require('raf/polyfill');
 

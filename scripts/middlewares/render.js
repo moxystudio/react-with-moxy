@@ -1,3 +1,5 @@
+'use strict';
+
 const { compose } = require('compose-middleware');
 const wrap = require('lodash/wrap');
 

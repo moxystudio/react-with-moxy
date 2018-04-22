@@ -1,5 +1,8 @@
 {
-    "rules": {
-        "prefer-import/prefer-import-over-require": 0
-    }
+    "root": true,
+    "extends": [
+        "eslint-config-moxy/es8",
+        "eslint-config-moxy/addons/node",
+        "eslint-config-moxy/addons/object-spread"
+    ]
 }

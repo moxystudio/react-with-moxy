@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
 
+'use strict';
+
 const path = require('path');
 const sameOrigin = require('same-origin');
 const constants = require('../../util/constants');

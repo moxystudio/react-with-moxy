@@ -1,3 +1,5 @@
+'use strict';
+
 const configs = {
     client: require('./config-client'),
     server: require('./config-server'),
