@@ -65,7 +65,7 @@ module.exports = ({ minify } = {}) => {
                         {
                             loader: require.resolve('babel-loader'),
                             options: {
-                                cacheDirectory: true,
+                                cacheDirectory: path.join(constants.projectDir, 'node_modules/.cache/babel-loader-server'),
                                 presets: [
                                     [require.resolve('babel-preset-moxy'), {
                                         targets: ['node'],
