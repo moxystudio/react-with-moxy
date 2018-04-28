@@ -22,7 +22,9 @@ export default function renderDocument({ helmet, rootHtml, buildManifest, isomor
                 <!-- Load CSS assets -->
                 ${assets.css.map((asset) => `<link data-ssr rel="stylesheet" href="${asset.url}">`).join('\n')}
                 <!-- Preload secondary assets -->
-                ${assets.secondary.map((asset) => `<link rel="prefetch" href="${asset.url}">`).join('\n')}
+                ${process.env.NODE_ENV !== 'development' ?
+                    assets.secondary.map((asset) => `<link rel="prefetch" href="${asset.url}">`).join('\n') :
+                    ''}
             </head>
             <body>
                 <!-- Root element where app goes -->
