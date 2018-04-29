@@ -248,14 +248,7 @@ module.exports = ({ minify } = {}) => {
                 include: compressibleRegExps,
                 exclude: /\.(map|LICENSE)$/,
                 asset: '[path].br',
-                algorithm: (buf, options, callback) => {
-                    brotliCompress(buf, {
-                        mode: 0,
-                        quality: 11,
-                        lgwin: 22,
-                        lgblock: 0,
-                    }, callback);
-                },
+                algorithm: (buf, options, callback) => brotliCompress(buf, callback),
             }),
             // External svg sprite plugin
             new SvgStorePlugin(),
