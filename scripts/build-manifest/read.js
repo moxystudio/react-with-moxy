@@ -2,10 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const { publicDir } = require('../util/constants');
+const { buildDir } = require('../util/constants');
 
 function readBuildManifest() {
-    const buildManifestFile = path.join(publicDir, 'build/build-manifest.json');
+    const buildManifestFile = path.join(buildDir, 'build-manifest.json');
 
     try {
         return JSON.parse(fs.readFileSync(buildManifestFile));

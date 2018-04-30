@@ -3,15 +3,14 @@
 const path = require('path');
 const sortChunks = require('webpack-sort-chunks').default;
 const escapeRegExp = require('lodash/escapeRegExp');
-const castArray = require('lodash/castArray');
 const merge = require('deepmerge');
 
-function parseWebpackStats(stats) {
-    const { hash, publicPath } = stats;
+function parseWebpackStats(statsJson) {
+    const { hash, publicPath, chunks } = statsJson;
 
     // Generate assets, grouping by extension/secondary
     // Note that we must sort chunks so that dependency order is correct
-    const assets = sortChunks(stats.chunks).reduce((assets, chunk) => {
+    const assets = sortChunks(chunks).reduce((assets, chunk) => {
         chunk.files
         .filter((file) => !file.endsWith('.map')) // Exclude source map files
         .forEach((file) => {
@@ -21,7 +20,7 @@ function parseWebpackStats(stats) {
             assets[key] = assets[key] || [];
             assets[key].push({
                 file,
-                url: stats.publicPath + file,
+                url: publicPath + file,
             });
         });
 
@@ -35,30 +34,32 @@ function parseWebpackStats(stats) {
     };
 }
 
-function removeServerBundle(manifest, stats) {
+function removeServerBundle(manifest, statsJson) {
+    const { entrypoints } = statsJson;
+
     // Grab the server chunk name & asset
-    const chunkName = Object.keys(stats.entrypoints)[0];
-    const asset = castArray(stats.assetsByChunkName[chunkName])[0];
+    const serverEntrypoint = entrypoints[Object.keys(entrypoints)[0]];
+    const serverAsset = serverEntrypoint && serverEntrypoint.assets.find((asset) => /\.js$/.test(asset));
 
     // Remove it from the assets
-    const bundleRegExp = new RegExp(`${escapeRegExp(asset)}(\\.map)?$`);
+    const bundleRegExp = new RegExp(`${escapeRegExp(serverAsset)}(\\.map)?$`);
 
     manifest.assets.js = manifest.assets.js.filter(({ file }) => !bundleRegExp.test(file));
 
-    return asset;
+    return serverAsset;
 }
 
 function createBuildManifest({ clientStats, serverStats }) {
     // Convert stats to objects
-    clientStats = clientStats.toJson();
-    serverStats = serverStats.toJson();
+    const clientStatsJson = clientStats.toJson();
+    const serverStatsJson = serverStats.toJson();
 
     // Do a common parse of the stats
-    const clientManifest = parseWebpackStats(clientStats);
-    const serverManifest = parseWebpackStats(serverStats);
+    const clientManifest = parseWebpackStats(clientStatsJson);
+    const serverManifest = parseWebpackStats(serverStatsJson);
 
     // Remove server bundle from assets
-    const serverFile = removeServerBundle(serverManifest, serverStats);
+    const serverFile = removeServerBundle(serverManifest, serverStatsJson);
 
     // Merge manifests, giving more importance to the client
     const manifest = merge(serverManifest, clientManifest, {

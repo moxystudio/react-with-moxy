@@ -5,7 +5,7 @@
 const path = require('path');
 const sameOrigin = require('same-origin');
 const mimeDb = require('mime-db');
-const constants = require('../../util/constants');
+const { projectDir, buildDir, buildUrlPath, srcDir, entryClientFile } = require('../../util/constants');
 const { getEnvVariables, inlineEnvVariables } = require('./util/env');
 
 // Webpack plugins
@@ -14,7 +14,7 @@ const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 const HotModuleReplacementPlugin = require('webpack/lib/HotModuleReplacementPlugin');
 const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const brotliCompress = require('iltorb').compress;
@@ -37,7 +37,7 @@ module.exports = ({ minify } = {}) => {
     const envVars = getEnvVariables();
 
     return {
-        context: constants.projectDir,
+        context: projectDir,
         mode: isDev ? 'development' : 'production',
         entry: {
             main: [
@@ -46,13 +46,13 @@ module.exports = ({ minify } = {}) => {
                 isDev && require.resolve('core-js/modules/es6.symbol'), // Necessary to get around an issue with `react-hot-loader` requiring react, see: https://github.com/facebook/react/issues/8379#issuecomment-309916013
                 isDev && require.resolve('webpack-hot-middleware/client'), // For hot module reload
                 require.resolve('svgxuse'), // Necessary because external svgs need a polyfill in IE
-                constants.entryClientFile,
+                entryClientFile,
             ]
             .filter((file) => file),
         },
         output: {
-            path: path.join(constants.publicDir, 'build'),
-            publicPath: `${publicUrl}/build/`,
+            path: buildDir,
+            publicPath: `${publicUrl + buildUrlPath}/`,
             filename: isDev ? 'js/[name].js' : 'js/[name].[chunkhash:15].js',
             chunkFilename: isDev ? 'js/chunk.[name].js' : 'js/chunk.[name].[chunkhash:15].js',
             hotUpdateChunkFilename: '[id].hot-update.js',
@@ -60,7 +60,7 @@ module.exports = ({ minify } = {}) => {
         },
         resolve: {
             alias: {
-                shared: path.join(constants.srcDir, 'shared'),
+                shared: path.join(srcDir, 'shared'),
                 // Ensure that any dependency using `babel-runtime/regenerator` maps to `regenerator-runtime`
                 // This guarantees that there is no `regenerator-runtime` duplication in the build in case the versions differ
                 'babel-runtime/regenerator': require.resolve('regenerator-runtime'),
@@ -80,7 +80,7 @@ module.exports = ({ minify } = {}) => {
                         {
                             loader: require.resolve('babel-loader'),
                             options: {
-                                cacheDirectory: path.join(constants.projectDir, 'node_modules/.cache/babel-loader-client'),
+                                cacheDirectory: path.join(projectDir, 'node_modules/.cache/babel-loader-client'),
                                 presets: [
                                     [require.resolve('babel-preset-moxy'), {
                                         targets: ['browsers'],
@@ -107,50 +107,49 @@ module.exports = ({ minify } = {}) => {
                         },
                     ],
                 },
-                // CSS files loader which enables the use of postcss & cssnext
+                // CSS files loader which enables the use of postcss
                 {
                     test: /\.css$/,
-                    loader: ExtractTextPlugin.extract({
-                        fallback: {
-                            loader: require.resolve('style-loader'),
+                    loader: [
+                        {
+                            // Extract CSS files if we are not in development mode
+                            loader: isDev ? require.resolve('style-loader') : MiniCssExtractPlugin.loader,
                             options: {
                                 convertToAbsoluteUrls: isDev,
                             },
                         },
-                        use: [
-                            {
-                                loader: require.resolve('css-loader'),
-                                options: {
-                                    modules: true,
-                                    sourceMap: true,
-                                    importLoaders: 1,
-                                    camelCase: 'dashes',
-                                    localIdentName: '[name]__[local]___[hash:base64:5]!',
-                                },
+                        {
+                            loader: require.resolve('css-loader'),
+                            options: {
+                                modules: true,
+                                sourceMap: true,
+                                importLoaders: 1,
+                                camelCase: 'dashes',
+                                localIdentName: '[name]__[local]___[hash:base64:5]!',
                             },
-                            {
-                                loader: require.resolve('postcss-loader'),
-                                options: require('postcss-preset-moxy')({
-                                    // Any non-relative imports are resolved to this path
-                                    importPath: path.join(constants.srcDir, 'shared/styles/imports'),
-                                }),
-                            },
-                        ],
-                    }),
+                        },
+                        {
+                            loader: require.resolve('postcss-loader'),
+                            options: require('postcss-preset-moxy')({
+                                // Any non-relative imports are resolved to this path
+                                importPath: path.join(srcDir, 'shared/styles/imports'),
+                            }),
+                        },
+                    ],
                 },
                 // Load SVG files and create an external sprite
                 // While this has a lot of advantages such as not blocking the initial load,
                 // it might not workout for every SVG, see: https://github.com/moxystudio/react-with-moxy/issues/6
                 {
                     test: /\.svg$/,
-                    exclude: [/\.inline\.svg$/, path.join(constants.srcDir, 'shared/media/fonts')],
+                    exclude: [/\.inline\.svg$/, path.join(srcDir, 'shared/media/fonts')],
                     use: [
                         {
                             loader: require.resolve('external-svg-sprite-loader'),
                             options: {
                                 name: isDev ? 'images/svg-sprite.svg' : 'images/svg-sprite.[hash:15].svg',
                                 // Force publicPath to be local because external SVGs doesn't work on CDNs
-                                ...!sameOrigin(publicUrl, siteUrl) ? { publicPath: `${siteUrl}/build/` } : {},
+                                ...!sameOrigin(publicUrl, siteUrl) ? { publicPath: `${siteUrl + buildUrlPath}/` } : {},
                             },
                         },
                         // Uniquify classnames and ids so that if svgxuse injects the sprite into the body,
@@ -232,11 +231,10 @@ module.exports = ({ minify } = {}) => {
             isDev && new HotModuleReplacementPlugin(),
             // Alleviate cases where developers working on OSX, which does not follow strict path case sensitivity
             new CaseSensitivePathsPlugin(),
-            // At the moment we only generic a single app CSS file which is kind of bad, see: https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/332
-            new ExtractTextPlugin({
-                filename: 'css/main.[md5:contenthash:hex:15].css',
-                allChunks: true,
-                disable: isDev,
+            // Extract CSS files if we are not in development mode
+            !isDev && new MiniCssExtractPlugin({
+                filename: 'css/main.[hash:15].css',
+                chunkFilename: 'css/chunk.[name].[chunkhash:15].css',
             }),
             // Compressed versions of the assets are produced along with the original files
             // Both gz and br versions of the assets are created

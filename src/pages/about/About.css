@@ -6,18 +6,47 @@
 
 @mixin layout-main .about-page, .container;
 
+.block {
+    margin-top: 30px;
+}
+
 /* ==========================================================================
    Icons
    ========================================================================== */
 
 .icon {
     margin-right: 10px;
+
+    &:hover {
+        fill: var(--color-amaranth);
+    }
 }
 
-.icon:hover {
-    fill: var(--color-amaranth);
+.icon-css {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    background-size: cover;
+
+    &.cake {
+        background-image: url("shared/media/images/icons/cake.svg");
+    }
+
+    &.thumbs-up {
+        background-image: url("shared/media/images/icons/thumbs-up.svg");
+    }
+
+    &.thumbs-down {
+        background-image: url("shared/media/images/icons/thumbs-up.svg");
+    }
+
+    &.child-care {
+        background-image: url("shared/media/images/icons/child-care.svg");
+    }
 }
 
-.icon-name {
+.icon-label {
     vertical-align: middle;
 }

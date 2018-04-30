@@ -19,7 +19,7 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const { render, renderError } = require('./middlewares/render');
 const { getConfig: getWebpackConfig } = require('./config/webpack');
 const createBuildManifest = require('./build-manifest/create');
-const { publicDir } = require('./util/constants');
+const { publicDir, buildDir, buildUrlPath } = require('./util/constants');
 
 // ---------------------------------------------------------
 // CLI definition
@@ -86,7 +86,7 @@ function prepare(data) {
     process.env.NODE_ENV = 'development';
 
     // Remove previous build
-    rimraf.sync(`${publicDir}/build`);
+    rimraf.sync(buildDir);
     process.stdout.write('Previous build removed successfully.\n');
 
     // Create isomorphic compiler
@@ -112,9 +112,9 @@ async function runServer(data) {
     // Configure express app
     app.set('etag', false); // Not necessary by default
 
-    // Public files in /build are served without any cache
+    // Public files in the build dir are served without any cache
     // (this isn't necessary unless memoryFs is disabled in the `webpack-isomorphic-dev-middleware`)
-    app.use('/build', express.static(`${publicDir}/build`, {
+    app.use(buildUrlPath, express.static(buildDir, {
         index: false,
         etag: false,
     }));

@@ -12,7 +12,7 @@ const internalIp = require('internal-ip');
 const express = require('express');
 const { render, renderError } = require('./middlewares/render');
 const readBuildManifest = require('./build-manifest/read');
-const { publicDir } = require('./util/constants');
+const { publicDir, buildDir, buildUrlPath } = require('./util/constants');
 const gzipStatic = require('express-static-gzip');
 
 // ---------------------------------------------------------
@@ -64,7 +64,7 @@ function prepare(data) {
     // Read the manifest & import the server code
     data.buildManifest = readBuildManifest();
 
-    const serverFile = `${publicDir}/build/${data.buildManifest.server.file}`;
+    const serverFile = `${buildDir}/${data.buildManifest.server.file}`;
 
     try {
         data.exports = require(serverFile);
@@ -90,14 +90,14 @@ async function runServer(data) {
     // If not, the regular files are served
     const staticServe = gzip ? gzipStatic : express.static;
 
-    // Public files in /build have the following pattern: <file>.<hash>.<extension>
+    // Public files in the build dir are hashed
     // Therefore it's safe to cache them indefinitely
-    app.use('/build', staticServe(`${publicDir}/build`, {
+    app.use(buildUrlPath, staticServe(buildDir, {
         maxAge: 31557600000, // 1 year
         immutable: true, // No conditional requests
         etag: false, // Not necessary
         index: false, // Disable directory listing
-        fallthrough: false, // Ensure that requests to /build do not propagate to other middleware
+        fallthrough: false, // Ensure that requests do not propagate to other middleware
         enableBrotli: true, // Add suport for brotli compressed files
     }));
 
