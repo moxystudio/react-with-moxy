@@ -12,7 +12,7 @@ const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
 const webpackIsomorphicCompilerReporter = require('webpack-isomorphic-compiler-reporter');
 const { getConfig: getWebpackConfig } = require('./config/webpack');
 const writeBuildManifest = require('./build-manifest/write');
-const { publicDir } = require('./util/constants');
+const { buildDir } = require('./util/constants');
 
 // ---------------------------------------------------------
 // CLI definition
@@ -49,7 +49,7 @@ function prepare() {
     process.env.NODE_ENV = 'production';
 
     // Clean previous build
-    rimraf.sync(`${publicDir}/build`);
+    rimraf.sync(buildDir);
 
     process.stdout.write('Previous build removed successfully.\n');
 }
@@ -71,7 +71,7 @@ async function build(data, { minify }) {
 function createBuildManifest({ compilation }) {
     writeBuildManifest(compilation);
 
-    process.stdout.write(`Manifest successfully created in the ${path.relative('', `${publicDir}/build`)} folder.\n`);
+    process.stdout.write(`Manifest successfully created in the ${path.relative('', buildDir)} folder.\n`);
 }
 
 // ---------------------------------------------------------

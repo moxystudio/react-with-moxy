@@ -4,16 +4,16 @@
 
 const path = require('path');
 const sameOrigin = require('same-origin');
-const constants = require('../../util/constants');
 const queryString = require('query-string');
 const { getEnvVariables, inlineEnvVariables } = require('./util/env');
+const { projectDir, buildDir, buildUrlPath, srcDir, entryServerFile } = require('../../util/constants');
 
 // Webpack plugins
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 module.exports = ({ minify } = {}) => {
@@ -26,18 +26,18 @@ module.exports = ({ minify } = {}) => {
     const envVars = getEnvVariables();
 
     return {
-        context: constants.projectDir,
+        context: projectDir,
         mode: isDev ? 'development' : 'production',
         entry: {
             // The `entry-points/serverEnv` entrypoint copies the read-only env variables into `process-env`
             'server-bundle': [
                 `${require.resolve('./entry-points/serverEnv')}?${queryString.stringify(envVars)}`,
-                constants.entryServerFile,
+                entryServerFile,
             ],
         },
         output: {
-            path: path.join(constants.publicDir, 'build'),
-            publicPath: `${publicUrl}/build/`,
+            path: buildDir,
+            publicPath: `${publicUrl + buildUrlPath}/`,
             filename: '[name].js',
             libraryTarget: 'this',
         },
@@ -49,7 +49,7 @@ module.exports = ({ minify } = {}) => {
         },
         resolve: {
             alias: {
-                shared: path.join(constants.srcDir, 'shared'),
+                shared: path.join(srcDir, 'shared'),
                 // Ensure that any dependency using `babel-runtime/regenerator` maps to `regenerator-runtime`
                 // This guarantees that there is no `regenerator-runtime` duplication in the build in case the versions differ
                 'babel-runtime/regenerator': require.resolve('regenerator-runtime'),
@@ -65,7 +65,7 @@ module.exports = ({ minify } = {}) => {
                         {
                             loader: require.resolve('babel-loader'),
                             options: {
-                                cacheDirectory: path.join(constants.projectDir, 'node_modules/.cache/babel-loader-server'),
+                                cacheDirectory: path.join(projectDir, 'node_modules/.cache/babel-loader-server'),
                                 presets: [
                                     [require.resolve('babel-preset-moxy'), {
                                         targets: ['node'],
@@ -92,45 +92,47 @@ module.exports = ({ minify } = {}) => {
                         },
                     ],
                 },
-                // CSS files loader which enables the use of postcss & cssnext
+                // CSS files loader which enables the use of postcss
                 {
                     test: /\.css$/,
-                    loader: ExtractTextPlugin.extract({
-                        use: [
-                            {
-                                // When building, we do not want to include the CSS contents.. the client will be responsible for that
-                                loader: !isDev ? require.resolve('css-loader/locals') : require.resolve('css-loader'),
-                                options: {
-                                    modules: true,
-                                    sourceMap: true,
-                                    importLoaders: 1,
-                                    camelCase: 'dashes',
-                                    localIdentName: '[name]__[local]___[hash:base64:5]!',
-                                },
+                    loader: [
+                        // Extract CSS files if we are in development mode, so that SSR comes with styles
+                        isDev && {
+                            loader: MiniCssExtractPlugin.loader,
+                        },
+                        {
+                            // In production, we don't want to have the CSS styles in the server-bundle
+                            loader: isDev ? require.resolve('css-loader') : require.resolve('css-loader/locals'),
+                            options: {
+                                modules: true,
+                                sourceMap: true,
+                                importLoaders: 1,
+                                camelCase: 'dashes',
+                                localIdentName: '[name]__[local]___[hash:base64:5]!',
                             },
-                            {
-                                loader: require.resolve('postcss-loader'),
-                                options: require('postcss-preset-moxy')({
-                                    // Any non-relative imports are resolved to this path
-                                    importPath: path.join(constants.srcDir, 'shared/styles/imports'),
-                                }),
-                            },
-                        ],
-                    }),
+                        },
+                        {
+                            loader: require.resolve('postcss-loader'),
+                            options: require('postcss-preset-moxy')({
+                                // Any non-relative imports are resolved to this path
+                                importPath: path.join(srcDir, 'shared/styles/imports'),
+                            }),
+                        },
+                    ].filter((val) => val),
                 },
                 // Load SVG files and create an external sprite
                 // While this has a lot of advantages, such as not blocking the initial load, it can't contain
                 // inline SVGs, see: https://github.com/moxystudio/react-with-moxy/issues/6
                 {
                     test: /\.svg$/,
-                    exclude: [/\.inline\.svg$/, path.join(constants.srcDir, 'shared/media/fonts')],
+                    exclude: [/\.inline\.svg$/, path.join(srcDir, 'shared/media/fonts')],
                     use: [
                         {
                             loader: require.resolve('external-svg-sprite-loader'),
                             options: {
                                 name: isDev ? 'images/svg-sprite.svg' : 'images/svg-sprite.[hash:15].svg',
                                 // Force publicPath to be local because external SVGs doesn't work on CDNs
-                                ...!sameOrigin(publicUrl, siteUrl) ? { publicPath: `${siteUrl}/build/` } : {},
+                                ...!sameOrigin(publicUrl, siteUrl) ? { publicPath: `${siteUrl + buildUrlPath}/` } : {},
                             },
                         },
                         // Uniquify classnames and ids so that if svgxuse injects the sprite into the body,
@@ -159,8 +161,7 @@ module.exports = ({ minify } = {}) => {
                                 ],
                             },
                         },
-                        // Uniquify classnames and ids so that if svgxuse injects the sprite into the body,
-                        // it doesn't cause DOM conflicts
+                        // Uniquify classnames and ids so they don't conflict with eachother
                         {
                             loader: require.resolve('svg-css-modules-loader'),
                             options: {
@@ -214,11 +215,10 @@ module.exports = ({ minify } = {}) => {
             }),
             // Alleviate cases where developers working on OSX, which does not follow strict path case sensitivity
             new CaseSensitivePathsPlugin(),
-            // At the moment we only generic a single app CSS file which is kind of bad, see: https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/332
-            new ExtractTextPlugin({
+            // Extract CSS files if we are in development mode, so that SSR comes with styles
+            isDev && new MiniCssExtractPlugin({
                 filename: 'css/main.css',
-                allChunks: true,
-                disable: !isDev,
+                chunkFilename: 'css/chunk.[name].css',
             }),
             // External svg sprite plugin
             new SvgStorePlugin({ emit: false }),
