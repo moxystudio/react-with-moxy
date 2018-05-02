@@ -9,7 +9,9 @@ const yargs = require('yargs');
 const planify = require('planify');
 const pify = require('pify');
 const internalIp = require('internal-ip');
+const yn = require('yn');
 const express = require('express');
+const compression = require('compression');
 const { render, renderError } = require('./middlewares/render');
 const readBuildManifest = require('./build-manifest/read');
 const { publicDir, buildDir, buildUrlPath } = require('./util/constants');
@@ -39,11 +41,11 @@ const argv = yargs
     default: Number(process.env.PORT) || 3000,
     describe: 'The port to bind to',
 })
-.option('gzip', {
+.option('compression', {
     alias: 'gz',
     type: 'boolean',
-    default: process.env.GZIP !== '0',
-    describe: 'Enable or disable gzip compression',
+    default: yn(process.env.COMPRESS, { default: true }),
+    describe: 'Enable or disable on the fly compression of responses',
 })
 .option('reporter', {
     type: 'string',
@@ -51,6 +53,7 @@ const argv = yargs
 })
 .example('$0', 'Serves the last built application')
 .example('$0 --port 8081', 'Serves the last built application on port 8081')
+.example('$0 --no-compression', 'Serves the last built application without on the fly compression')
 .argv;
 
 // ---------------------------------------------------------
@@ -79,20 +82,16 @@ function prepare(data) {
 }
 
 async function runServer(data) {
-    const { host, port, gzip } = argv;
+    const { host, port, compression: compress } = argv;
     const app = express();
 
     // Configure express app
     app.set('etag', false); // Not necessary by default
     app.set('x-powered-by', false); // Remove x-powered-by header
 
-    // If the gzip flag is on the compressed files are served
-    // If not, the regular files are served
-    const staticServe = gzip ? gzipStatic : express.static;
-
     // Public files in the build dir are hashed
     // Therefore it's safe to cache them indefinitely
-    app.use(buildUrlPath, staticServe(buildDir, {
+    app.use(buildUrlPath, gzipStatic(buildDir, {
         maxAge: 31557600000, // 1 year
         immutable: true, // No conditional requests
         etag: false, // Not necessary
@@ -100,6 +99,8 @@ async function runServer(data) {
         fallthrough: false, // Ensure that requests do not propagate to other middleware
         enableBrotli: true, // Add suport for brotli compressed files
     }));
+
+    compress && app.use('/', compression());
 
     // The rest of the public files are served using a more modest approach using etags
     app.use(express.static(publicDir, {
@@ -129,7 +130,7 @@ async function runServer(data) {
 
     process.stdout.write(`Server address:            ${url}\n`);
     process.stdout.write(`LAN server address:        ${lanUrl}\n`);
-    process.stdout.write(`Gzip compression:          ${gzip ? 'on' : 'off'}\n`);
+    process.stdout.write(`Compression:               ${compress ? 'on' : 'off'}\n`);
     process.stdout.write('\nServer is now up and running, press CTRL-C to stop.\n');
 }
 

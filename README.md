@@ -68,6 +68,8 @@ In the near future, we will be moving all the built-in tooling under `scripts/` 
 $ npm install
 ```
 
+When the installation ends, copy [.env.sample ](./.env.sample) to `.env`. All the supported environment variables are described in this same file, in case you need to tweak any of them. You may read more under the [Environment variables](#environment-variables) section.
+
 
 ## Commands
 
@@ -142,7 +144,7 @@ The following variables will be made available:
 - `PUBLIC_URL`: Where the web app `public/` folder is being served from. This is usually the same as the `SITE_URL` unless you use an external CDN to store and serve the files. You may use this to generate URLs to assets that do not go through Webpack.
 - `REACT_APP_*`: Custom variables that may be accessible in both the client and server bundles.
 
-These will be embeded at **build time**, thus are **read-only**. This means you must rebuild your application every time you change them.
+These will be embedded at **build time**, thus are **read-only**. This means you must rebuild your application every time you change them.
 
 ### Server bundle
 
@@ -156,15 +158,18 @@ If you need custom environment variables, you must prefix them with `REACT_APP_`
 
 ### .env file
 
-Environment variables defined on `.env` file will be loaded into `process.env`.
-Please read [**dotenv**](https://github.com/motdotla/dotenv) documentation for more information.
+Environment variables defined in the `.env` file will be automatically loaded into `process.env`.
+
+This file is ignored in source control and it is intended to be created from `.env.sample`, which is committed and anyone who clones the project can easily use it as a starting point. All the supported variables, including their description and default values, are defined there.
+
+Here's an example of how to declare two new environment variables:
 
 ```
 REACT_APP_FOO=foo
 REACT_APP_BAR=bar
 ```
 
-This file is ignored in source control and it is intended to be created from `.env.sample`, which is commited and anyone who clones the project can easily use it as a starting point.
+Note that relying in the `.env` file is mostly useful for development. While you may still use it in production, it's advisable to pass environment variables explicitly when running commands. You may read the [**dotenv**](https://github.com/motdotla/dotenv) documentation for more information.
 
 ### Passing environment variables when building a docker image
 
@@ -250,15 +255,19 @@ import someSvg from './some.inline.svg';
 // `someSvg` is something like <svg ... />
 ```
 
-**Should Node.js be responsible for compressing assets with gzip?**
+**Should Node.js be responsible for compressing responses?**
 
-Doing the compression in **Node.js** might hold the event loop which is not desirable for performance reasons. That's why we employ `gzip` and `br` compression at build time. We use [compression-webpack-plugin](https://github.com/webpack-contrib/compression-webpack-plugin) to compress the assets when the project is built and the production server will attempt to serve the compressed files based on the requests' [Accept-Encoding](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding) header.
+Doing the compression in **Node.js** might hold the event loop which is not desirable for performance reasons.
 
-Nevertheless, if you want to do compression in a reverse proxy server, like **nginx**, you may disable serving the compressed files by starting the server with:
+That's why we employ `gzip` and `br` compression at build time for the built assets. We use [compression-webpack-plugin](https://github.com/webpack-contrib/compression-webpack-plugin) to compress the assets when the project is built and the production server will attempt to serve the compressed files based on the requests' [Accept-Encoding](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding) header.
+
+For other responses, such as server-side rendered HTML, you may disable the on the fly compression and do it in a reverse-proxy server, like **nginx**. To do so, you may either pass the `--no-compression` flag or set the `COMPRESSION=0` environment variable:
 
 ```sh
-npm start -- --no-gzip
+npm start -- --no-compression
+COMPRESSION=0 npm start
 ```
+
 
 ## Used in
 

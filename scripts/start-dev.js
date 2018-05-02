@@ -52,7 +52,7 @@ const argv = yargs
 })
 .option('memory-fs', {
     type: 'boolean',
-    default: yn(process.env.WEBPACK_DEV_POOL, { default: true }),
+    default: yn(process.env.WEBPACK_MEMORY_FS, { default: true }),
     describe: 'Use an in-memory filesystem instead of writing assets to disk (recommended)',
 })
 .option('reporter', {
