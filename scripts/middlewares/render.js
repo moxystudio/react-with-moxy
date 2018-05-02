@@ -5,11 +5,13 @@ const wrap = require('lodash/wrap');
 
 function render() {
     return compose([
-        // Disable browser caching unless a specific page defined a cache-control policy
+        // If there's no `Cache-Control` header, assume that the content is private and must be revalidated
+        // This allow cached responses to be used if validation, such as ETag, is successful
+        // We shouldn't use `no-cache` because some browsers treat it as `no-store`, which forces no cache at all
         (req, res, next) => {
             res.writeHead = wrap(res.writeHead, (writeHeaders, ...args) => {
                 if (!res.get('Cache-control')) {
-                    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+                    res.set('Cache-Control', 'private, max-age=0, must-revalidate');
                 }
 
                 writeHeaders.apply(res, args);

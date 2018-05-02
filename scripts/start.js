@@ -86,11 +86,14 @@ async function runServer(data) {
     const app = express();
 
     // Configure express app
-    app.set('etag', false); // Not necessary by default
     app.set('x-powered-by', false); // Remove x-powered-by header
 
-    // Public files in the build dir are hashed
-    // Therefore it's safe to cache them indefinitely
+    // Setup compression of responses
+    compress && app.use(compression());
+
+    // Serve files fom the build dir
+    // These files are hashed, therefore it's safe to cache them indefinitely
+    // Note that we use `express-static-gzip` to serve pre-compressed files!
     app.use(buildUrlPath, gzipStatic(buildDir, {
         maxAge: 31557600000, // 1 year
         immutable: true, // No conditional requests
@@ -100,9 +103,7 @@ async function runServer(data) {
         enableBrotli: true, // Add suport for brotli compressed files
     }));
 
-    compress && app.use('/', compression());
-
-    // The rest of the public files are served using a more modest approach using etags
+    // Serve files fom the public dir
     app.use(express.static(publicDir, {
         index: false,
     }));
