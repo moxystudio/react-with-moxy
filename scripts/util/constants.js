@@ -7,7 +7,7 @@ const srcDir = path.join(projectDir, 'src');
 const publicDir = path.join(projectDir, 'public');
 // `buildDir` must be a sulfolder of `publicDir` and must not contain any unsafe URL char
 // in its name, such as # or ?
-const buildDir = path.join(publicDir, 'build');
+const buildDir = path.join(publicDir, '_build');
 
 module.exports = {
     projectDir,

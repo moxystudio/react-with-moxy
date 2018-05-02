@@ -79,7 +79,7 @@ When the installation ends, copy [.env.sample ](./.env.sample) to `.env`. All th
 $ npm run build
 ```
 
-Builds the project for production, producing the bundled assets at `public/build`.
+Builds the project for production, producing the bundled assets at `public/_build`.
 Please run `npm run build -- -h` for more options.
 
 ### start

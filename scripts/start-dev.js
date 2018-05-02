@@ -109,34 +109,32 @@ async function runServer(data) {
     const { isomorphicCompiler } = data;
     const app = express();
 
-    // Configure express app
-    app.set('etag', false); // Not necessary by default
-
-    // Public files in the build dir are served without any cache
-    // (this isn't necessary unless memoryFs is disabled in the `webpack-isomorphic-dev-middleware`)
-    app.use(buildUrlPath, express.static(buildDir, {
-        index: false,
-        etag: false,
+    // Setup compilaton so that changes are compiled on the fly!
+    app.use(webpackIsomorphicDevMiddleware(isomorphicCompiler, {
+        memoryFs,
+        watchDelay: 50,
+        watchOptions: { poll },
+        // OS notifications! (skip if CI)
+        notify: { icon: !process.env.CI ? `${publicDir}/favicon.ico` : undefined },
+    }));
+    app.use(webpackHotMiddleware(isomorphicCompiler.client.webpackCompiler, {
+        log: false,
     }));
 
-    // The rest of the public files are served using a more modest approach using etags
+    // Serve files fom the build dir
+    // This is here only if `webpackIsomorphicDevMiddleware` doesn't know the requested file
+    app.use(buildUrlPath, express.static(buildDir, {
+        index: false,
+        fallthrough: false, // Ensure that requests do not propagate to other middleware
+    }));
+
+    // Serve files fom the public dir
     app.use(express.static(publicDir, {
         index: false,
     }));
 
     // If it's not a public file, render the app!
     app.use(
-        // Setup compilaton so that changes are compiled on the fly!
-        webpackIsomorphicDevMiddleware(isomorphicCompiler, {
-            memoryFs,
-            watchDelay: 50,
-            watchOptions: { poll },
-            // OS notifications! (skip if CI)
-            notify: { icon: !process.env.CI ? `${publicDir}/favicon.ico` : undefined },
-        }),
-        webpackHotMiddleware(isomorphicCompiler.client.webpackCompiler, {
-            log: false,
-        }),
         (req, res, next) => {
             const { isomorphic } = res.locals;
 
