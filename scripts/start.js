@@ -44,7 +44,7 @@ const argv = yargs
 .option('compression', {
     alias: 'gz',
     type: 'boolean',
-    default: yn(process.env.COMPRESS, { default: true }),
+    default: yn(process.env.COMPRESSION, { default: true }),
     describe: 'Enable or disable on the fly compression of responses',
 })
 .option('reporter', {
