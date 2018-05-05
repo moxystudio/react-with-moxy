@@ -75,7 +75,6 @@ module.exports = ({ minify } = {}) => {
                 // Babel loader enables us to use new ECMA features + react's JSX
                 {
                     test: /\.js$/,
-                    exclude: /node_modules/,
                     use: [
                         {
                             loader: require.resolve('babel-loader'),
