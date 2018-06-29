@@ -73,7 +73,7 @@
     "react-router-scroll": "^0.4.1",
     "serialize-javascript": "^1.4.0",
     "svgxuse": "^1.2.1",
-    "yargs": "^11.0.0"
+    "yargs": "^12.0.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^6.1.0",
