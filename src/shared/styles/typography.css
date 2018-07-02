@@ -33,16 +33,13 @@ body {
     color: var(--color-white);
 }
 
-strong {
-    font-weight: 500;
-}
-
 /* ==========================================================================
   Links
   ========================================================================== */
 
 a {
     color: var(--color-amaranth);
+    text-decoration: none;
     transition: color 0.2s;
 }
 
@@ -61,6 +58,7 @@ h3,
 h4,
 h5,
 h6 {
+    margin: 0.9em 0;
     font-family: var(--typography-display-font);
     font-weight: 400;
     text-transform: uppercase;
