@@ -9,13 +9,14 @@
 
 /* @font-face {
     font-family: "CustomFont";
-    font-weight: 800;
+    font-weight: normal;
     font-style: normal;
     src:
-         url("shared/media/fonts/custom-font/CustomFont.woff2") format("woff2"),
-         url("shared/media/fonts/custom-font/CustomFont.woff") format("woff"),
-         url("shared/media/fonts/custom-font/CustomFont.eot") format("embedded-opentype"),
- } */
+        url("shared/media/fonts/custom-font/CustomFont.woff2") format("woff2"),
+        url("shared/media/fonts/custom-font/CustomFont.woff") format("woff"),
+        url("shared/media/fonts/custom-font/CustomFont.eot") format("embedded-opentype");
+} */
+
 
 /* ==========================================================================
    Typography Defaults
