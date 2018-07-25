@@ -241,6 +241,20 @@ module.exports = ({ minify } = {}) => {
                     },
                 }),
             ],
+            splitChunks: {
+                cacheGroups: {
+                    // Generate a single CSS file for now until this is solved:
+                    // https://github.com/moxystudio/react-with-moxy/issues/113
+                    ...(!isDev ? {} : {
+                        styles: {
+                            name: 'styles',
+                            test: /\.css$/,
+                            chunks: 'all',
+                            enforce: true,
+                        },
+                    }),
+                },
+            },
         },
         performance: {
             maxEntrypointSize: Infinity,

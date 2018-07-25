@@ -1,16 +1,51 @@
 'use strict';
 
 const path = require('path');
-const sortChunks = require('webpack-sort-chunks').default;
 const escapeRegExp = require('lodash/escapeRegExp');
 const merge = require('deepmerge');
+const toposort = require('toposort');
 
-function parseWebpackStats(statsJson) {
+// Switch back `webpack-sort-chunks` if https://github.com/diegohaz/webpack-sort-chunks/issues/3 gets resolved
+// It was throwing an error related to cyclic dependencies
+const sortChunks = (chunks, compilation) => {
+    const chunkGroups = compilation.chunkGroups;
+
+    // We build a map (chunk-id -> chunk) for faster access during graph building.
+    const nodeMap = {};
+
+    chunks.forEach((chunk) => {
+        nodeMap[chunk.id] = chunk;
+    });
+
+    // Next, we add an edge for each parent relationship into the graph
+    const edges = chunkGroups.reduce((result, chunkGroup) => result.concat(
+        Array.from(chunkGroup.parentsIterable, (parentGroup) => [parentGroup, chunkGroup])
+    ), []);
+
+    const sortedGroups = toposort.array(chunkGroups, edges);
+    // Flatten chunkGroup into chunks
+    const sortedChunks = sortedGroups
+    .reduce((result, chunkGroup) => result.concat(chunkGroup.chunks), [])
+    .map((chunk) => // Use the chunk from the list passed in, since it may be a filtered list
+        nodeMap[chunk.id])
+    .filter((chunk, index, self) => {
+        // Make sure exists (ie excluded chunks not in nodeMap)
+        const exists = !!chunk;
+        // Make sure we have a unique list
+        const unique = self.indexOf(chunk) === index;
+
+        return exists && unique;
+    });
+
+    return sortedChunks;
+};
+
+function parseWebpackStats(statsJson, compilation) {
     const { hash, publicPath, chunks } = statsJson;
 
     // Generate assets, grouping by extension/secondary
     // Note that we must sort chunks so that dependency order is correct
-    const assets = sortChunks(chunks).reduce((assets, chunk) => {
+    const assets = sortChunks(chunks, compilation).reduce((assets, chunk) => {
         chunk.files
         .filter((file) => !file.endsWith('.map')) // Exclude source map files
         .forEach((file) => {
@@ -55,8 +90,8 @@ function createBuildManifest({ clientStats, serverStats }) {
     const serverStatsJson = serverStats.toJson();
 
     // Do a common parse of the stats
-    const clientManifest = parseWebpackStats(clientStatsJson);
-    const serverManifest = parseWebpackStats(serverStatsJson);
+    const clientManifest = parseWebpackStats(clientStatsJson, clientStats.compilation);
+    const serverManifest = parseWebpackStats(serverStatsJson, serverStats.compilation);
 
     // Remove server bundle from assets
     const serverFile = removeServerBundle(serverManifest, serverStatsJson);
