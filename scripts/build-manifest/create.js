@@ -3,42 +3,7 @@
 const path = require('path');
 const escapeRegExp = require('lodash/escapeRegExp');
 const merge = require('deepmerge');
-const toposort = require('toposort');
-
-// Switch back `webpack-sort-chunks` if https://github.com/diegohaz/webpack-sort-chunks/issues/3 gets resolved
-// It was throwing an error related to cyclic dependencies
-const sortChunks = (chunks, compilation) => {
-    const chunkGroups = compilation.chunkGroups;
-
-    // We build a map (chunk-id -> chunk) for faster access during graph building.
-    const nodeMap = {};
-
-    chunks.forEach((chunk) => {
-        nodeMap[chunk.id] = chunk;
-    });
-
-    // Next, we add an edge for each parent relationship into the graph
-    const edges = chunkGroups.reduce((result, chunkGroup) => result.concat(
-        Array.from(chunkGroup.parentsIterable, (parentGroup) => [parentGroup, chunkGroup])
-    ), []);
-
-    const sortedGroups = toposort.array(chunkGroups, edges);
-    // Flatten chunkGroup into chunks
-    const sortedChunks = sortedGroups
-    .reduce((result, chunkGroup) => result.concat(chunkGroup.chunks), [])
-    .map((chunk) => // Use the chunk from the list passed in, since it may be a filtered list
-        nodeMap[chunk.id])
-    .filter((chunk, index, self) => {
-        // Make sure exists (ie excluded chunks not in nodeMap)
-        const exists = !!chunk;
-        // Make sure we have a unique list
-        const unique = self.indexOf(chunk) === index;
-
-        return exists && unique;
-    });
-
-    return sortedChunks;
-};
+const sortChunks = require('webpack-sort-chunks').default;
 
 function parseWebpackStats(statsJson, compilation) {
     const { hash, publicPath, chunks } = statsJson;
