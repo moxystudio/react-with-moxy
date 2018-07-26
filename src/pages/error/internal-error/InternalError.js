@@ -5,7 +5,14 @@ import Hero from 'shared/components/hero/Hero';
 import styles from './InternalError.css';
 
 class InternalError extends PureComponent {
-    componentWillMount() {
+    static propTypes = {
+        err: PropTypes.object,
+        serverContext: PropTypes.object,
+    };
+
+    constructor(props) {
+        super(props);
+
         // Set status code to 500
         this.props.serverContext && this.props.serverContext.res.status(500);
 
@@ -13,9 +20,9 @@ class InternalError extends PureComponent {
         this.props.err && console.error('[InternalError]', this.props.err);
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentDidUpdate(previousProps) {
         // Log the error if it changes (console will be dropped in prod)
-        nextProps.err !== this.props.err && this.props.err && console.log('[InternalError]', this.props.err);
+        this.props.err && this.props.err !== previousProps && console.log('[InternalError]', this.props.err);
     }
 
     render() {
@@ -30,11 +37,6 @@ class InternalError extends PureComponent {
                 </div>
             </main>
         );
-    }
-
-    static propTypes = {
-        err: PropTypes.object,
-        serverContext: PropTypes.object,
     }
 }
 

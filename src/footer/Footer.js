@@ -4,6 +4,10 @@ import classNames from 'classnames';
 import styles from './Footer.css';
 
 class Footer extends PureComponent {
+    static propTypes = {
+        className: PropTypes.string,
+    };
+
     render() {
         const { className } = this.props;
         const footerClass = classNames(`${styles.footer}`, `${className}`);
@@ -15,10 +19,6 @@ class Footer extends PureComponent {
                 </a>
             </footer>
         );
-    }
-
-    static propTypes = {
-        className: PropTypes.string,
     }
 }
 

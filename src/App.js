@@ -11,29 +11,29 @@ import buildPageRoutes from './pages/buildRoutes';
 Helmet.defaultProps.defer = false;
 
 class App extends PureComponent {
-    render() {
-        const { children } = this.props;
+        static propTypes = {
+            children: PropTypes.element,
+        };
 
-        return (
-            <div className={ styles.app }>
-                <Helmet
-                    htmlAttributes={ { lang: 'en' } }
-                    defaultTitle="MOXY"
-                    titleTemplate="MOXY - %s"
-                    meta={ [
-                        { name: 'description', content: 'MOXY\'s awesome react-with-moxy boilerplate' },
-                    ] } />
+        render() {
+            const { children } = this.props;
 
-                <Header className={ styles.header } />
-                { children }
-                <Footer className={ styles.footer } />
-            </div>
-        );
-    }
+            return (
+                <div className={ styles.app }>
+                    <Helmet
+                        htmlAttributes={ { lang: 'en' } }
+                        defaultTitle="MOXY"
+                        titleTemplate="MOXY - %s"
+                        meta={ [
+                            { name: 'description', content: 'MOXY\'s awesome react-with-moxy boilerplate' },
+                        ] } />
 
-    static propTypes = {
-        children: PropTypes.element,
-    }
+                    <Header className={ styles.header } />
+                    { children }
+                    <Footer className={ styles.footer } />
+                </div>
+            );
+        }
 }
 
 export function buildRoutes() {
