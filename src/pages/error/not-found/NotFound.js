@@ -5,7 +5,13 @@ import Hero from 'shared/components/hero/Hero';
 import styles from './NotFound.css';
 
 class NotFound extends PureComponent {
-    componentWillMount() {
+    static propTypes = {
+        serverContext: PropTypes.object,
+    };
+
+    constructor(props) {
+        super(props);
+
         // Set status code to 404
         this.props.serverContext && this.props.serverContext.res.status(404);
     }
@@ -22,10 +28,6 @@ class NotFound extends PureComponent {
                 </div>
             </main>
         );
-    }
-
-    static propTypes = {
-        serverContext: PropTypes.object,
     }
 }
 

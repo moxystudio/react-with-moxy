@@ -43,7 +43,7 @@ const argv = yargs
     alias: 'p',
     type: 'number',
     default: Number(process.env.PORT) || 3000,
-    describe: 'The port to bind to',
+    describe: 'The preferred port to bind to',
 })
 .option('poll', {
     type: 'boolean',
@@ -94,7 +94,13 @@ function prepare(data) {
 }
 
 async function findFreePort() {
-    const port = await getPort({ host: argv.host, port: argv.port });
+    const port = await getPort({
+        host: argv.host,
+        port: [
+            argv.port,
+            ...[3000, 3010, 3020, 3030, 3040, 3050, 3060, 3070, 3080, 3090, 8080],
+        ],
+    });
 
     if (port !== argv.port) {
         process.stdout.write(`Port ${argv.port} is already in use, using ${port} instead..\n`);
