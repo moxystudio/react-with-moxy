@@ -13,9 +13,11 @@ const DefinePlugin = require('webpack/lib/DefinePlugin');
 const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 const HotModuleReplacementPlugin = require('webpack/lib/HotModuleReplacementPlugin');
 const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
+const BannerPlugin = require('webpack/lib/BannerPlugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const IgnoreEmitPlugin = require('ignore-emit-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const brotliCompress = require('iltorb').compress;
 
@@ -54,7 +56,7 @@ module.exports = ({ minify } = {}) => {
             path: buildDir,
             publicPath: `${publicUrl + buildUrlPath}/`,
             filename: isDev ? 'js/[name].js' : 'js/[name].[chunkhash:15].js',
-            chunkFilename: isDev ? 'js/chunk.[name].js' : 'js/chunk.[name].[chunkhash:15].js',
+            chunkFilename: isDev ? 'js/[name].js' : 'js/[name].[chunkhash:15].js',
             hotUpdateChunkFilename: '[id].hot-update.js',
             hotUpdateMainFilename: 'hot-update.json',
         },
@@ -234,7 +236,18 @@ module.exports = ({ minify } = {}) => {
             // Extract CSS files if we are not in development mode
             !isDev && new MiniCssExtractPlugin({
                 filename: 'css/main.[hash:15].css',
-                chunkFilename: 'css/chunk.[name].[chunkhash:15].css',
+                chunkFilename: 'css/[name].[chunkhash:15].css',
+            }),
+            // Ignore the emitted `styles.js` file that originated from a bug in `splitChunks`,
+            // see: https://github.com/webpack-contrib/mini-css-extract-plugin/issues/151#issuecomment-402336362
+            // Still we must include the "bootstrap" of the app by injecting the "banner" below,
+            // see: https://github.com/webpack-contrib/mini-css-extract-plugin/issues/85#issuecomment-387918944
+            !isDev && new IgnoreEmitPlugin([/^js\/styles\.\w+\.js(\.map)?$/]),
+            !isDev && new BannerPlugin({
+                banner: '(window.webpackJsonp = window.webpackJsonp || []).push([[0], []]);',
+                raw: true,
+                entryOnly: true,
+                include: /js\/main\.\w+\.js$/,
             }),
             // Compressed versions of the assets are produced along with the original files
             // Both gz and br versions of the assets are created
@@ -272,12 +285,17 @@ module.exports = ({ minify } = {}) => {
             ],
             splitChunks: {
                 cacheGroups: {
-                    // Generate a single CSS file for now until this is solved:
-                    // https://github.com/moxystudio/react-with-moxy/issues/113
+                    // Generate a single CSS file for now until this is solved,
+                    // see https://github.com/moxystudio/react-with-moxy/issues/113
                     ...(isDev ? {} : {
                         styles: {
                             name: 'styles',
-                            test: /\.css$/,
+                            // Can't use /\.css$/ due to a bug,
+                            // see https://github.com/webpack-contrib/mini-css-extract-plugin/issues/85#issuecomment-378673224
+                            test: (module) =>
+                                module.nameForCondition &&
+                                /\.css$/.test(module.nameForCondition()) &&
+                                !/^javascript/.test(module.type),
                             chunks: 'all',
                             enforce: true,
                         },
