@@ -42,12 +42,14 @@ const sortChunks = (chunks, compilation) => {
 
 function parseWebpackStats(statsJson, compilation) {
     const { hash, publicPath, chunks } = statsJson;
+    const emittedAssets = new Set(statsJson.assets.map((asset) => asset.name));
 
     // Generate assets, grouping by extension/secondary
     // Note that we must sort chunks so that dependency order is correct
     const assets = sortChunks(chunks, compilation).reduce((assets, chunk) => {
         chunk.files
         .filter((file) => !file.endsWith('.map')) // Exclude source map files
+        .filter((file) => emittedAssets.has(file)) // Exclude ignored files (non-emitted)
         .forEach((file) => {
             const ext = path.extname(file).substr(1);
             const key = chunk.initial ? ext : 'secondary';
@@ -70,18 +72,19 @@ function parseWebpackStats(statsJson, compilation) {
 }
 
 function removeServerBundle(manifest, statsJson) {
-    const { entrypoints } = statsJson;
+    const { assets } = statsJson;
 
-    // Grab the server chunk name & asset
-    const serverEntrypoint = entrypoints[Object.keys(entrypoints)[0]];
-    const serverAsset = serverEntrypoint && serverEntrypoint.assets.find((asset) => /\.js$/.test(asset));
+    // Grab the server asset
+    const serverAssetName = assets
+    .map((asset) => asset.name)
+    .find((asset) => /\bserver\b.*\.js$/.test(asset));
 
-    // Remove it from the assets
-    const bundleRegExp = new RegExp(`${escapeRegExp(serverAsset)}(\\.map)?$`);
+    // Remove it from the assets, including it's source map files
+    const serverAssetNameRegExp = new RegExp(`${escapeRegExp(serverAssetName)}(\\.map)?$`);
 
-    manifest.assets.js = manifest.assets.js.filter(({ file }) => !bundleRegExp.test(file));
+    manifest.assets.js = manifest.assets.js.filter(({ file }) => !serverAssetNameRegExp.test(file));
 
-    return serverAsset;
+    return serverAssetName;
 }
 
 function createBuildManifest({ clientStats, serverStats }) {
