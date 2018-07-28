@@ -59,7 +59,7 @@
     "dom4": "^2.0.0",
     "dotenv": "^6.0.0",
     "express": "^4.14.1",
-    "express-static-gzip": "^0.3.2",
+    "express-static-gzip": "^1.0.0",
     "internal-ip": "^3.0.1",
     "lodash": "^4.17.10",
     "normalize.css": "^8.0.0",
