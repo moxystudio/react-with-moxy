@@ -64,7 +64,7 @@
     "lodash": "^4.17.10",
     "normalize.css": "^8.0.0",
     "nprogress": "^0.2.0",
-    "pify": "^3.0.0",
+    "pify": "^4.0.0",
     "planify": "^2.2.1",
     "prop-types": "^15.5.8",
     "react": "^16.4.2",
