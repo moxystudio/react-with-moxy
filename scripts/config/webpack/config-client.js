@@ -175,6 +175,7 @@ module.exports = ({ minify } = {}) => {
                             options: {
                                 plugins: [
                                     { removeTitle: true },
+                                    { removeViewBox: false },
                                     { removeDimensions: true },
                                     { cleanupIDs: false },
                                 ],
