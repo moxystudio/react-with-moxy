@@ -12,7 +12,7 @@ const { projectDir, buildDir, buildUrlPath, srcDir, entryServerFile } = require(
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const IgnoreEmitPlugin = require('ignore-emit-webpack-plugin');
@@ -211,7 +211,7 @@ module.exports = ({ minify } = {}) => {
                 regeneratorRuntime: require.resolve('regenerator-runtime'),
             }),
             // Add support for environment variables under `process.env`
-            // Also replace `typeof window` so that code branch elimination is performed by uglify at build time
+            // Also replace `typeof window` so that code branch elimination is performed by terser at build time
             new DefinePlugin({
                 ...inlineEnvVariables(envVars),
                 'typeof window': '"undefined"',
@@ -233,11 +233,11 @@ module.exports = ({ minify } = {}) => {
         optimization: {
             minimize: minify,
             minimizer: [
-                new UglifyJsPlugin({
+                new TerserPlugin({
                     sourceMap: true,
                     parallel: true,
                     cache: true,
-                    uglifyOptions: {
+                    terserOptions: {
                         mangle: true,
                         compress: {
                             warnings: false, // Mute warnings
