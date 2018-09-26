@@ -98,7 +98,7 @@
     "external-svg-sprite-loader": "^4.0.0-beta.4",
     "file-loader": "^1.1.11",
     "get-port": "^4.0.0",
-    "husky": "^0.14.3",
+    "husky": "^1.0.0",
     "identity-obj-proxy": "^3.0.0",
     "ignore-emit-webpack-plugin": "^1.0.2",
     "iltorb": "^2.4.0",
