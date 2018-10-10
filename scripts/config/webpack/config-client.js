@@ -5,7 +5,7 @@
 const path = require('path');
 const sameOrigin = require('same-origin');
 const mimeDb = require('mime-db');
-const { projectDir, buildDir, buildUrlPath, srcDir, entryClientFile } = require('../../util/constants');
+const { projectDir, buildDir, buildUrlPath, serviceWorkerFile, srcDir, entryClientFile } = require('../../util/constants');
 const { getEnvVariables, inlineEnvVariables } = require('./util/env');
 
 // Webpack plugins
@@ -20,6 +20,7 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const IgnoreEmitPlugin = require('ignore-emit-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const brotliCompress = require('iltorb').compress;
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 const compressibleRegExps = Object.values(mimeDb)
 .filter((mime) => mime.compressible && mime.extensions)
@@ -264,6 +265,23 @@ module.exports = ({ minify } = {}) => {
             }),
             // External svg sprite plugin
             new SvgStorePlugin(),
+            // Plugin to produce the service worker
+            new WorkboxPlugin.GenerateSW({
+                swDest: serviceWorkerFile,
+                importsDirectory: 'sw',
+                // Ignore the emitted `styles.js` file that originated from a bug in `splitChunks`,
+                // see: https://github.com/webpack-contrib/mini-css-extract-plugin/issues/151#issuecomment-402336362
+                // Note that the default exclude argument entries are kept
+                exclude: [
+                    /\.map$/,
+                    /^manifest.*\.js(?:on)?$/,
+                    /^js\/styles\.\w+\.js(\.map)?$/,
+                ],
+                runtimeCaching: [{
+                    urlPattern: /.*/,
+                    handler: 'networkFirst',
+                }],
+            }),
         ].filter((val) => val),
         devtool: isDev ? 'cheap-module-eval-source-map' : 'nosources-source-map',
         optimization: {

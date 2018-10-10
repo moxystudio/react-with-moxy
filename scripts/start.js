@@ -11,10 +11,11 @@ const pify = require('pify');
 const internalIp = require('internal-ip');
 const yn = require('yn');
 const express = require('express');
+const send = require('send');
 const compression = require('compression');
 const { render, renderError } = require('./middlewares/render');
 const readBuildManifest = require('./build-manifest/read');
-const { publicDir, buildDir, buildUrlPath } = require('./util/constants');
+const { publicDir, buildDir, buildUrlPath, serviceWorkerFile } = require('./util/constants');
 const gzipStatic = require('express-static-gzip');
 
 // ---------------------------------------------------------
@@ -90,6 +91,9 @@ async function runServer(data) {
 
     // Setup compression of responses
     compress && app.use(compression());
+
+    // Serve service-worker from the root
+    app.use('/service-worker.js', (req, res) => send(req, serviceWorkerFile).pipe(res));
 
     // Serve files fom the build dir
     // These files are hashed, therefore it's safe to cache them indefinitely

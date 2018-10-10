@@ -30,6 +30,16 @@ export default function renderDocument({ helmet, rootHtml, buildManifest, isomor
                 <!-- Root element where app goes -->
                 <div id="root">${rootHtml}</div>
 
+                <script>
+                // Check that service workers are registered
+                if ('serviceWorker' in navigator) {
+                    // Use the window load event to keep the page load performant
+                    window.addEventListener('load', () => {
+                        navigator.serviceWorker.register('/service-worker.js');
+                    });
+                }
+                </script>
+
                 <!-- Isomorphic state -->
                 <script>window.__ISOMORPHIC_STATE__ = ${serialize(isomorphicState, { isJSON: true })};</script>
 
