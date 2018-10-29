@@ -56,6 +56,7 @@ module.exports = ({ minify } = {}) => {
                 // This guarantees that there is no `regenerator-runtime` duplication in the build in case the versions differ
                 'babel-runtime/regenerator': require.resolve('regenerator-runtime'),
             },
+            symlinks: false,
         },
         module: {
             rules: [
