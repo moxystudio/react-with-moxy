@@ -14,6 +14,7 @@ const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const IgnoreEmitPlugin = require('ignore-emit-webpack-plugin');
 
@@ -247,6 +248,7 @@ module.exports = ({ minify } = {}) => {
                         },
                     },
                 }),
+                new OptimizeCSSAssetsPlugin(),
             ],
             splitChunks: {
                 cacheGroups: {
