@@ -34,7 +34,7 @@ export default function renderDocument({ helmet, rootHtml, buildManifest, isomor
                 <script>window.__ISOMORPHIC_STATE__ = ${serialize(isomorphicState, { isJSON: true })};</script>
 
                 <!-- Load JS assets -->
-                ${assets.js.map((asset) => `<script src="${asset.url}"></script>`).join('\n')}
+                ${assets.js.map((asset) => `<script async src="${asset.url}"></script>`).join('\n')}
 
                 ${config.googleTrackingCode ? `
                 <!-- Google Analytics -->
