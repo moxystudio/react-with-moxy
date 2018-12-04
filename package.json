@@ -55,7 +55,7 @@
     "classnames": "^2.2.5",
     "compose-middleware": "^5.0.0",
     "compression": "^1.7.2",
-    "deepmerge": "^2.0.1",
+    "deepmerge": "^3.0.0",
     "dom4": "^2.0.0",
     "dotenv": "^6.0.0",
     "express": "^4.14.1",
