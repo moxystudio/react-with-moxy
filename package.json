@@ -107,7 +107,7 @@
     "jest-file": "^1.0.0",
     "lint-staged": "^7.0.0",
     "mime-db": "^1.33.0",
-    "mini-css-extract-plugin": "^0.4.0",
+    "mini-css-extract-plugin": "^0.5.0",
     "postcss-loader": "^2.0.8",
     "postcss-preset-moxy": "^2.0.2",
     "preprocess-loader": "^0.2.0",
