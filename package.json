@@ -109,7 +109,7 @@
     "mime-db": "^1.33.0",
     "mini-css-extract-plugin": "^0.4.0",
     "postcss-loader": "^2.0.8",
-    "postcss-preset-moxy": "^2.0.2",
+    "postcss-preset-moxy": "^3.0.0",
     "preprocess-loader": "^0.2.0",
     "query-string": "^6.0.0",
     "raf": "^3.4.0",
