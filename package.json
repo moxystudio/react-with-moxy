@@ -102,7 +102,7 @@
     "identity-obj-proxy": "^3.0.0",
     "ignore-emit-webpack-plugin": "^1.0.2",
     "iltorb": "^2.4.0",
-    "jest": "^23.4.2",
+    "jest": "^24.5.0",
     "jest-enzyme": "^6.0.0",
     "jest-file": "^1.0.0",
     "lint-staged": "^7.0.0",
