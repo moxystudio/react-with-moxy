@@ -95,7 +95,7 @@
     "eslint-config-moxy": "^6.0.1",
     "eventsource-polyfill": "^0.9.6",
     "execa": "^0.10.0",
-    "external-svg-sprite-loader": "^4.0.0-beta.4",
+    "external-svg-sprite-loader": "^4.0.0",
     "file-loader": "^1.1.11",
     "get-port": "^4.0.0",
     "husky": "^0.14.3",

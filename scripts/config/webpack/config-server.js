@@ -11,7 +11,7 @@ const { projectDir, buildDir, buildUrlPath, srcDir, entryServerFile } = require(
 // Webpack plugins
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 const ProvidePlugin = require('webpack/lib/ProvidePlugin');
-const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
+const SvgStorePlugin = require('external-svg-sprite-loader');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
@@ -131,7 +131,7 @@ module.exports = ({ minify } = {}) => {
                     exclude: [/\.inline\.svg$/, path.join(srcDir, 'shared/media/fonts')],
                     use: [
                         {
-                            loader: require.resolve('external-svg-sprite-loader'),
+                            loader: SvgStorePlugin.loader,
                             options: {
                                 name: isDev ? 'images/svg-sprite.svg' : 'images/svg-sprite.[hash:15].svg',
                                 // Force publicPath to be local because external SVGs doesn't work on CDNs

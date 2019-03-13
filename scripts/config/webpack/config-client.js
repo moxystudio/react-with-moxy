@@ -12,7 +12,7 @@ const { getEnvVariables, inlineEnvVariables } = require('./util/env');
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 const HotModuleReplacementPlugin = require('webpack/lib/HotModuleReplacementPlugin');
-const SvgStorePlugin = require('external-svg-sprite-loader/lib/SvgStorePlugin');
+const SvgStorePlugin = require('external-svg-sprite-loader');
 const BannerPlugin = require('webpack/lib/BannerPlugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -148,7 +148,7 @@ module.exports = ({ minify } = {}) => {
                     exclude: [/\.inline\.svg$/, path.join(srcDir, 'shared/media/fonts')],
                     use: [
                         {
-                            loader: require.resolve('external-svg-sprite-loader'),
+                            loader: SvgStorePlugin.loader,
                             options: {
                                 name: isDev ? 'images/svg-sprite.svg' : 'images/svg-sprite.[hash:15].svg',
                                 // Force publicPath to be local because external SVGs doesn't work on CDNs
