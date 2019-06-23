@@ -13,11 +13,11 @@
 
 /* Use these if you are developing mobile first and want to target higher resolutions */
 
-@custom-media --layout-gte-small (width > 480px);
-@custom-media --layout-gte-medium (width > 768px);
-@custom-media --layout-gte-large (width > 1024px);
-@custom-media --layout-gte-xlarge (width > 1440px);
-@custom-media --layout-gte-xxlarge (width > 1920px);
+@custom-media --layout-gt-small (width > 480px);
+@custom-media --layout-gt-medium (width > 768px);
+@custom-media --layout-gt-large (width > 1024px);
+@custom-media --layout-gt-xlarge (width > 1440px);
+@custom-media --layout-gt-xxlarge (width > 1920px);
 
 /* Use these to target a specific range */
 
