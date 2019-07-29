@@ -27,7 +27,7 @@ html {
 */
 
 body {
-    overflow-y: scroll;  /* 1 */
+    overflow-x: hidden;  /* 1 */
     display: flex; /* 2 */
     flex: 1 0 auto;  /* 2 */
     flex-direction: column;  /* 2 */
