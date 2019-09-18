@@ -6,10 +6,6 @@ import Footer from './footer/Footer';
 import styles from './App.css';
 import buildPageRoutes from './pages/buildRoutes';
 
-// Force Helmet's defer prop to false until it works out a bug on IE11
-// See: https://github.com/nfl/react-helmet/issues/336
-Helmet.defaultProps.defer = false;
-
 class App extends PureComponent {
         static propTypes = {
             children: PropTypes.element,
