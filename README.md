@@ -6,7 +6,7 @@
 
 
 [travis-url]:https://travis-ci.org/moxystudio/react-with-moxy
-[travis-image]:http://img.shields.io/travis/moxystudio/react-with-moxy/master.svg
+[travis-image]:https://img.shields.io/travis/moxystudio/react-with-moxy/master.svg
 [david-dm-url]:https://david-dm.org/moxystudio/react-with-moxy
 [david-dm-image]:https://img.shields.io/david/moxystudio/react-with-moxy.svg
 [david-dm-dev-url]:https://david-dm.org/moxystudio/react-with-moxy?type=dev
