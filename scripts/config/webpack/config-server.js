@@ -63,7 +63,6 @@ module.exports = ({ minify } = {}) => {
                 // Babel loader enables us to use new ECMA features + react's JSX
                 {
                     test: /\.js$/,
-                    exclude: /node_modules/,
                     use: [
                         {
                             loader: require.resolve('babel-loader'),
@@ -79,8 +78,6 @@ module.exports = ({ minify } = {}) => {
                                 plugins: [
                                     // Necessary for import() to work
                                     require.resolve('babel-plugin-dynamic-import-node'),
-                                    // <3 hot module reload
-                                    isDev ? require.resolve('react-hot-loader/babel') : null,
                                 ]
                                 .filter((plugin) => plugin),
                             },
