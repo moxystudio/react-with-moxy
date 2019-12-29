@@ -1,4 +1,5 @@
 @import "mixins/layout";
+@import "mixins/colorize";
 
 /* ==========================================================================
    Layout
@@ -44,6 +45,10 @@
 
     &.child-care {
         background-image: url("shared/media/images/icons/child-care.svg");
+    }
+
+    &:hover {
+        @mixin colorize "amaranth";
     }
 }
 
